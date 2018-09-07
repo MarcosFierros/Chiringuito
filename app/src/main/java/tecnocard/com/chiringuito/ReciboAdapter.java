@@ -15,9 +15,11 @@ import java.util.List;
 public class ReciboAdapter extends RecyclerView.Adapter<ReciboAdapter.MyViewHolder> {
 
     private static List<Producto> list;
+    private static TextView totalValueTextView;
 
-    public ReciboAdapter(List<Producto> list){
+    public ReciboAdapter(List<Producto> list, TextView totalValueTextView){
         this.list = list;
+        this.totalValueTextView = totalValueTextView;
     }
 
     @NonNull
@@ -62,7 +64,7 @@ public class ReciboAdapter extends RecyclerView.Adapter<ReciboAdapter.MyViewHold
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    removeAt(getAdapterPosition(), context);
+                    removeAt(getAdapterPosition());
                 }
             });
 
@@ -70,12 +72,46 @@ public class ReciboAdapter extends RecyclerView.Adapter<ReciboAdapter.MyViewHold
         }
     }
 
-    public  void removeAt(int position, Context context) {
+    public  void removeAt(int position) {
+        double oldTotal = Double.parseDouble(totalValueTextView.getText().toString().replace("$", ""));
+        double newTotal = oldTotal - list.get(position).getPrecio();
+        totalValueTextView.setText("$ " + newTotal);
         list.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, list.size());
-        Toast toast = Toast.makeText(context, "Producto Eliminado",Toast.LENGTH_SHORT );
-        toast.show();
+    }
+
+    public void removeAll(){
+        final int size = list.size();
+        if (size > 0) {
+            for (int i = 0; i < size; i++) {
+                list.remove(0);
+            }
+            notifyItemRangeRemoved(0, size);
+        }
+        totalValueTextView.setText("$ 0.00");
+    }
+
+    public String Collapse(){
+        String ret = "";
+        for(int i = 0; i < list.size(); i++){
+            Producto p = list.get(i);
+            for(int j = 0; i < list.size(); i++){
+                Producto p2 = list.get(j);
+            }
+            if(p.added())
+               p.addQty();
+        }
+
+        for(int i = 0; i < list.size(); i++){
+            Producto p = list.get(i);
+            if(p.added())
+                p.setCollapsed(true);
+            if(!p.isCollapsed())
+                ret += p.toString()+ "\n";
+        }
+
+        return ret;
     }
 
 

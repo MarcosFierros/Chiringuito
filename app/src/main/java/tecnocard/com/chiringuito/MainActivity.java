@@ -1,9 +1,9 @@
 package tecnocard.com.chiringuito;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
@@ -19,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity
         productoList.add(new Producto(4, "Verduras", 22.5));
         productoList.add(new Producto(5, "Conchitas", 17.5));
 
+        TextView totalValueTextView = findViewById(R.id.totalValueTxtView);
         recyclerView = findViewById(R.id.mainRecyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.addItemDecoration(
@@ -65,11 +67,11 @@ public class MainActivity extends AppCompatActivity
                 new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         layoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(layoutManager);
-        reciboAdapter = new ReciboAdapter(finalList);
-        imageAdapter = new ImageAdapter(productoList, finalList, reciboAdapter);
+        reciboAdapter = new ReciboAdapter(finalList, totalValueTextView);
+        imageAdapter = new ImageAdapter(productoList, finalList, reciboAdapter, totalValueTextView);
         recyclerView.setAdapter(imageAdapter);
 
-        reciboRecyclerView = findViewById(R.id.recyclerView2);
+        reciboRecyclerView = findViewById(R.id.reciboRecyclerView);
         reciboRecyclerView.setItemAnimator(new DefaultItemAnimator());
         reciboRecyclerView.setHasFixedSize(true);
         reciboRecyclerView.addItemDecoration(
@@ -82,7 +84,24 @@ public class MainActivity extends AppCompatActivity
         readyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                builder.setTitle("Verifique órden:");
+                builder.setMessage(finalList.get(0).toString());
+                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        reciboAdapter.removeAll();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
 
+                    }
+                });
+                AlertDialog alertDialog = builder.create();
+
+                alertDialog.show();  //<-- See This!
             }
         });
 

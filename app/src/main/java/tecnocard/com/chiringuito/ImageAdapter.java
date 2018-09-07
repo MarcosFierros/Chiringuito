@@ -17,13 +17,13 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.imageViewHol
     private static List<Producto> productlist;
     private static List<Producto> finalList;
     private static ReciboAdapter reciboAdapter;
-    private double total;
+    TextView totalValueTextView;
 
-    public ImageAdapter(List<Producto> productlistlist, List<Producto> finalList, ReciboAdapter reciboAdapter){
+    public ImageAdapter(List<Producto> productlistlist, List<Producto> finalList, ReciboAdapter reciboAdapter, TextView totalValueTextView){
         this.productlist = productlistlist;
         this.finalList = finalList;
         this.reciboAdapter = reciboAdapter;
-        total = 0.0;
+        this.totalValueTextView = totalValueTextView;
     }
 
     @NonNull
@@ -70,7 +70,9 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.imageViewHol
                     reciboAdapter.notifyDataSetChanged();
                     Producto producto = productlist.get(getAdapterPosition());
                     finalList.add(producto);
-                    total += producto.getPrecio();
+                    double oldTotal = Double.parseDouble(totalValueTextView.getText().toString().replace("$", ""));
+                    double newTotal = oldTotal + producto.getPrecio();
+                    totalValueTextView.setText("$ " + newTotal);
                 }
             });
 
