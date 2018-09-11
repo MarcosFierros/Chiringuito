@@ -144,5 +144,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         toast.show();
     }
 
+    public void setProducts(List<Producto> productos){
+        list = productos;
+        notifyDataSetChanged();
+    }
 
+    public static class ProductViewModel {
+    }
 }

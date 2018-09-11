@@ -1,9 +1,12 @@
 package tecnocard.com.chiringuito;
 
 import android.app.AlertDialog;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
@@ -35,6 +38,8 @@ public class MainActivity extends AppCompatActivity
     private ImageAdapter imageAdapter;
     private ReciboAdapter reciboAdapter;
 
+    private ProductViewModel mProductViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -42,6 +47,14 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        mProductViewModel = ViewModelProviders.of(this).get(ProductViewModel.class);
+        mProductViewModel.getAllProducts().observe(this, new Observer<List<Producto>>() {
+            @Override
+            public void onChanged(@Nullable List<Producto> productos) {
+                imageAdapter.setProducts(productos);
+            }
+        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -54,12 +67,6 @@ public class MainActivity extends AppCompatActivity
 
         finalList = new ArrayList<>();
         productoList = new ArrayList<>();
-        productoList.add(new Producto(1,"Papas",15.0));
-        productoList.add(new Producto(2, "Tostilocos", 25.0));
-        productoList.add(new Producto(3, "Frutas", 20.5));
-        productoList.add(new Producto(4, "Verduras", 22.5));
-        productoList.add(new Producto(5, "Conchitas", 17.5));
-
         final TextView totalValueTextView = findViewById(R.id.totalValueTxtView);
         recyclerView = findViewById(R.id.mainRecyclerView);
         recyclerView.setHasFixedSize(true);
@@ -88,19 +95,24 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+
                 LayoutInflater inflater = LayoutInflater.from(view.getContext());
                 View alertView = inflater.inflate(R.layout.alert_layout, null);
+
                 TextView totalAlertTxtView = alertView.findViewById(R.id.alertTotalValueTV);
                 totalAlertTxtView.setText(totalValueTextView.getText());
+
                 RecyclerView alertRecyclerView = alertView.findViewById(R.id.alertRv);
                 layoutManager = new LinearLayoutManager(view.getContext());
                 alertRecyclerView.setLayoutManager(layoutManager);
                 alertAdapter = new AlertAdapter(reciboAdapter.Collapse(), totalValueTextView);
                 alertRecyclerView.setAdapter(alertAdapter);
+
                 builder.setView(alertView);
                 builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+//                        Hacer el cobro en sql
                         reciboAdapter.removeAll();
                     }
                 });

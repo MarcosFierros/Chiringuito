@@ -1,19 +1,30 @@
 package tecnocard.com.chiringuito;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
-import android.widget.ImageView;
 
+@Entity(tableName = "products_table")
 public class Producto implements Comparable<Producto>{
 
+    @PrimaryKey(autoGenerate = true)
+    @NonNull
     private int id;
+
+    @ColumnInfo(name = "product_name")
     private String nombre;
+
+    @ColumnInfo(name = "product_price")
     private double precio;
+
+    @ColumnInfo(name = "product_img")
     private int imageSrc;
+
     private int qty;
     private boolean collapsed;
 
     public Producto(){
-        this.id = -1;
         this.nombre = "";
         this.precio = 0.0;
         this.imageSrc = R.drawable.ic_menu_camera;
@@ -21,8 +32,7 @@ public class Producto implements Comparable<Producto>{
         this.collapsed = false;
     }
 
-    public Producto(int id, String nombre, double precio){
-        this.id = id;
+    public Producto(String nombre, double precio){
         this.nombre = nombre;
         this.precio = precio;
         this.imageSrc = R.drawable.ic_menu_camera;
@@ -32,10 +42,6 @@ public class Producto implements Comparable<Producto>{
 
     public void addQty(){
         this.qty++;
-    }
-
-    public boolean added(){
-        return qty > 1;
     }
 
     @Override

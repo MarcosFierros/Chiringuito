@@ -19,8 +19,8 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.imageViewHol
     private static ReciboAdapter reciboAdapter;
     TextView totalValueTextView;
 
-    public ImageAdapter(List<Producto> productlistlist, List<Producto> finalList, ReciboAdapter reciboAdapter, TextView totalValueTextView){
-        this.productlist = productlistlist;
+    public ImageAdapter(List<Producto> productlist, List<Producto> finalList, ReciboAdapter reciboAdapter, TextView totalValueTextView){
+        this.productlist = productlist;
         this.finalList = finalList;
         this.reciboAdapter = reciboAdapter;
         this.totalValueTextView = totalValueTextView;
@@ -84,8 +84,9 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.imageViewHol
         }
     }
 
-    public void addNew(Producto producto){
-
+    public void setProducts(List<Producto> productos){
+        productlist = productos;
+        notifyDataSetChanged();
     }
 
 }
