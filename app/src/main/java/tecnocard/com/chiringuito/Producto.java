@@ -1,8 +1,9 @@
 package tecnocard.com.chiringuito;
 
+import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
-public class Producto {
+public class Producto implements Comparable<Producto>{
 
     private int id;
     private String nombre;
@@ -39,7 +40,8 @@ public class Producto {
 
     @Override
     public String toString() {
-        return qty + "x " + nombre +"\t$ "+ precio;
+        double finalPrecio = precio*qty;
+        return qty + "x " + nombre +"\t\t $ "+ finalPrecio;
     }
 
     public void setId(int id) {
@@ -88,5 +90,13 @@ public class Producto {
 
     public boolean isCollapsed() {
         return collapsed;
+    }
+
+    @Override
+    public int compareTo(@NonNull Producto producto) {
+        if(this.getQty() ==  producto.getQty())
+            return this.nombre.compareTo(producto.getNombre());
+        else
+            return this.getQty() - producto.getQty();
     }
 }

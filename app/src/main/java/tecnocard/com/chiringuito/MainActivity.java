@@ -9,6 +9,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity
     private RecyclerView recyclerView, reciboRecyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private List<Producto> productoList, finalList;
+    private AlertAdapter alertAdapter;
     private ImageAdapter imageAdapter;
     private ReciboAdapter reciboAdapter;
 
@@ -58,7 +60,7 @@ public class MainActivity extends AppCompatActivity
         productoList.add(new Producto(4, "Verduras", 22.5));
         productoList.add(new Producto(5, "Conchitas", 17.5));
 
-        TextView totalValueTextView = findViewById(R.id.totalValueTxtView);
+        final TextView totalValueTextView = findViewById(R.id.totalValueTxtView);
         recyclerView = findViewById(R.id.mainRecyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.addItemDecoration(
@@ -67,7 +69,7 @@ public class MainActivity extends AppCompatActivity
                 new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         layoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(layoutManager);
-        reciboAdapter = new ReciboAdapter(finalList, totalValueTextView);
+        reciboAdapter = new ReciboAdapter(finalList, productoList, totalValueTextView);
         imageAdapter = new ImageAdapter(productoList, finalList, reciboAdapter, totalValueTextView);
         recyclerView.setAdapter(imageAdapter);
 
@@ -84,9 +86,18 @@ public class MainActivity extends AppCompatActivity
         readyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-                builder.setTitle("Verifique órden:");
-                builder.setMessage(finalList.get(0).toString());
+                LayoutInflater inflater = LayoutInflater.from(view.getContext());
+                View alertView = inflater.inflate(R.layout.alert_layout, null);
+                TextView totalAlertTxtView = alertView.findViewById(R.id.alertTotalValueTV);
+                totalAlertTxtView.setText(totalValueTextView.getText());
+                RecyclerView alertRecyclerView = alertView.findViewById(R.id.alertRv);
+                layoutManager = new LinearLayoutManager(view.getContext());
+                alertRecyclerView.setLayoutManager(layoutManager);
+                alertAdapter = new AlertAdapter(reciboAdapter.Collapse(), totalValueTextView);
+                alertRecyclerView.setAdapter(alertAdapter);
+                builder.setView(alertView);
                 builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

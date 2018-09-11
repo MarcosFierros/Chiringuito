@@ -10,15 +10,19 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class ReciboAdapter extends RecyclerView.Adapter<ReciboAdapter.MyViewHolder> {
 
-    private static List<Producto> list;
+    private static List<Producto> compraList;
+    private static List<Producto> productsList;
     private static TextView totalValueTextView;
 
-    public ReciboAdapter(List<Producto> list, TextView totalValueTextView){
-        this.list = list;
+    public ReciboAdapter(List<Producto> compraList, List<Producto> productsList,TextView totalValueTextView){
+        this.compraList = compraList;
+        this.productsList = productsList;
         this.totalValueTextView = totalValueTextView;
     }
 
@@ -35,14 +39,14 @@ public class ReciboAdapter extends RecyclerView.Adapter<ReciboAdapter.MyViewHold
     @Override
     public void onBindViewHolder(ReciboAdapter.MyViewHolder holder, int position) {
 
-        holder.name.setText(list.get(position).getNombre());
-        holder.precio.setText("$" + list.get(position).getPrecio());
+        holder.name.setText(compraList.get(position).getNombre());
+        holder.precio.setText("$" + compraList.get(position).getPrecio());
 
     }
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return compraList.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -74,45 +78,47 @@ public class ReciboAdapter extends RecyclerView.Adapter<ReciboAdapter.MyViewHold
 
     public  void removeAt(int position) {
         double oldTotal = Double.parseDouble(totalValueTextView.getText().toString().replace("$", ""));
-        double newTotal = oldTotal - list.get(position).getPrecio();
+        double newTotal = oldTotal - compraList.get(position).getPrecio();
         totalValueTextView.setText("$ " + newTotal);
-        list.remove(position);
+        compraList.remove(position);
         notifyItemRemoved(position);
-        notifyItemRangeChanged(position, list.size());
+        notifyItemRangeChanged(position, compraList.size());
     }
 
     public void removeAll(){
-        final int size = list.size();
+        final int size = compraList.size();
         if (size > 0) {
             for (int i = 0; i < size; i++) {
-                list.remove(0);
+                compraList.remove(0);
             }
             notifyItemRangeRemoved(0, size);
         }
         totalValueTextView.setText("$ 0.00");
     }
 
-    public String Collapse(){
-        String ret = "";
-        for(int i = 0; i < list.size(); i++){
-            Producto p = list.get(i);
-            for(int j = 0; i < list.size(); i++){
-                Producto p2 = list.get(j);
+    public List<Producto> Collapse(){
+
+        List<Producto> collapsedList = new ArrayList<>();
+        for(Producto p: productsList){
+            p.setQty(0);
+            collapsedList.add(p);
+        }
+
+        for(Producto p1: compraList){
+            for(Producto p2: collapsedList){
+                if(p1.compareTo(p2) == 0)
+                    p2.addQty();
             }
-            if(p.added())
-               p.addQty();
         }
 
-        for(int i = 0; i < list.size(); i++){
-            Producto p = list.get(i);
-            if(p.added())
-                p.setCollapsed(true);
-            if(!p.isCollapsed())
-                ret += p.toString()+ "\n";
+        for (Iterator<Producto> iterator = collapsedList.iterator(); iterator.hasNext(); ) {
+            Producto p = iterator.next();
+            if(p.getQty() ==0){
+                iterator.remove();
+            }
         }
 
-        return ret;
+        return collapsedList;
     }
-
 
 }
