@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 public class Producto implements Comparable<Producto>{
 
     @PrimaryKey(autoGenerate = true)
-    @NonNull
     private int id;
 
     @ColumnInfo(name = "product_name")
@@ -23,14 +22,6 @@ public class Producto implements Comparable<Producto>{
 
     private int qty;
     private boolean collapsed;
-
-    public Producto(){
-        this.nombre = "";
-        this.precio = 0.0;
-        this.imageSrc = R.drawable.ic_menu_camera;
-        this.qty = 1;
-        this.collapsed = false;
-    }
 
     public Producto(String nombre, double precio){
         this.nombre = nombre;

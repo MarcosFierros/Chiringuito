@@ -1,5 +1,6 @@
-package tecnocard.com.chiringuito;
+package tecnocard.com.chiringuito.RecyclerViewAdapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -8,22 +9,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import tecnocard.com.chiringuito.Producto;
+import tecnocard.com.chiringuito.R;
+
 public class ReciboAdapter extends RecyclerView.Adapter<ReciboAdapter.MyViewHolder> {
 
     private static List<Producto> compraList;
     private static List<Producto> productsList;
+    @SuppressLint("StaticFieldLeak")
     private static TextView totalValueTextView;
 
     public ReciboAdapter(List<Producto> compraList, List<Producto> productsList,TextView totalValueTextView){
-        this.compraList = compraList;
-        this.productsList = productsList;
-        this.totalValueTextView = totalValueTextView;
+        ReciboAdapter.compraList = compraList;
+        ReciboAdapter.productsList = productsList;
+        ReciboAdapter.totalValueTextView = totalValueTextView;
     }
 
     @NonNull
@@ -31,13 +35,13 @@ public class ReciboAdapter extends RecyclerView.Adapter<ReciboAdapter.MyViewHold
     public ReciboAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recibo_layout, parent, false);
-        ReciboAdapter.MyViewHolder myViewHolder = new ReciboAdapter.MyViewHolder(view, parent.getContext());
 
-        return myViewHolder;
+        return new MyViewHolder(view, parent.getContext());
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(ReciboAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ReciboAdapter.MyViewHolder holder, int position) {
 
         holder.name.setText(compraList.get(position).getNombre());
         holder.precio.setText("$" + compraList.get(position).getPrecio());
@@ -49,14 +53,14 @@ public class ReciboAdapter extends RecyclerView.Adapter<ReciboAdapter.MyViewHold
         return compraList.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView name, precio;
         Button delete;
         Context context;
 
 
-        public MyViewHolder(View itemView, final Context context) {
+        MyViewHolder(View itemView, final Context context) {
             super(itemView);
 
             name = itemView.findViewById(R.id.nameTxtView);
@@ -76,7 +80,8 @@ public class ReciboAdapter extends RecyclerView.Adapter<ReciboAdapter.MyViewHold
         }
     }
 
-    public  void removeAt(int position) {
+    @SuppressLint("SetTextI18n")
+    private void removeAt(int position) {
         double oldTotal = Double.parseDouble(totalValueTextView.getText().toString().replace("$", ""));
         double newTotal = oldTotal - compraList.get(position).getPrecio();
         totalValueTextView.setText("$ " + newTotal);
@@ -85,6 +90,7 @@ public class ReciboAdapter extends RecyclerView.Adapter<ReciboAdapter.MyViewHold
         notifyItemRangeChanged(position, compraList.size());
     }
 
+    @SuppressLint("SetTextI18n")
     public void removeAll(){
         final int size = compraList.size();
         if (size > 0) {

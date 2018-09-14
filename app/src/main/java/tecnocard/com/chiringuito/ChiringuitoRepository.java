@@ -3,7 +3,6 @@ package tecnocard.com.chiringuito;
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
-import android.support.v4.widget.CircularProgressDrawable;
 
 import java.util.List;
 
@@ -12,7 +11,7 @@ public class ChiringuitoRepository {
     private ProductsDao mProductDao;
     private LiveData<List<Producto>> mAllProducts;
 
-    public ChiringuitoRepository(Application application){
+    ChiringuitoRepository(Application application){
         ChiringuitoRoomDatabase db = ChiringuitoRoomDatabase.getDatabase(application);
         mProductDao = db.productsDao();
         mAllProducts = mProductDao.getAllProducts();

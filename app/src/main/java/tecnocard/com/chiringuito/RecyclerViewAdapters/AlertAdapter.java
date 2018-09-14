@@ -1,5 +1,6 @@
-package tecnocard.com.chiringuito;
+package tecnocard.com.chiringuito.RecyclerViewAdapters;
 
+import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,14 +10,15 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import tecnocard.com.chiringuito.Producto;
+import tecnocard.com.chiringuito.R;
+
 public class AlertAdapter extends  RecyclerView.Adapter<AlertAdapter.MyViewHolder>{
 
     private static List<Producto> list;
-    private static TextView totalValueTextView;
 
-    public AlertAdapter(List<Producto> list, TextView totalValueTextView){
-        this.list = list;
-        this.totalValueTextView = totalValueTextView;
+    public AlertAdapter(List<Producto> list){
+        AlertAdapter.list = list;
     }
 
     @NonNull
@@ -24,13 +26,13 @@ public class AlertAdapter extends  RecyclerView.Adapter<AlertAdapter.MyViewHolde
     public AlertAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.alert_recycler_layout, parent, false);
-        AlertAdapter.MyViewHolder myViewHolder = new AlertAdapter.MyViewHolder(view);
 
-        return myViewHolder;
+        return new MyViewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(AlertAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull AlertAdapter.MyViewHolder holder, int position) {
 
         Producto p = list.get(position);
             holder.name.setText(p.getQty() + "x " + p.getNombre());
@@ -43,11 +45,11 @@ public class AlertAdapter extends  RecyclerView.Adapter<AlertAdapter.MyViewHolde
         return list.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView name, precio;
 
-        public MyViewHolder(View itemView) {
+        MyViewHolder(View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.alertPNameTV);
             precio = itemView.findViewById(R.id.alertPPriceTV);

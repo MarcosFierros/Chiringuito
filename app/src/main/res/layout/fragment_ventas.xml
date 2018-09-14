@@ -4,9 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".MainActivity"
-    tools:showIn="@layout/app_bar_main">
+    tools:context=".UI.MainActivity">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/linearLayout2"
@@ -17,9 +15,9 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:background="@drawable/layout_bg_rounded_corners"
         android:orientation="vertical"
         android:weightSum="2"
-        android:background="@drawable/layout_bg_rounded_corners"
         app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -32,7 +30,7 @@
             android:background="#FFFFFF">
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/mainRecyclerView"
+                android:id="@+id/imageRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="8dp"
@@ -58,7 +56,7 @@
             android:background="#DDDDDD">
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/reciboRecyclerView"
+                android:id="@+id/finalListRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="8dp"
@@ -70,7 +68,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/mainRecyclerView"
+                app:layout_constraintTop_toBottomOf="@+id/imageRecyclerView"
                 app:layout_constraintVertical_bias="0.0" />
         </LinearLayout>
 
@@ -86,13 +84,6 @@
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-        </LinearLayout>
         <!-- Right side spacer -->
         <View
             android:layout_width="0dp"
@@ -111,7 +102,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="Ready"
+        android:text="@string/ready"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.97"
@@ -144,7 +135,7 @@
             android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:text="Total:"
+            android:text="@string/total"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -163,7 +154,7 @@
             android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:text="$ 0.0"
+            android:text="@string/_0_0"
             android:textSize="30sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

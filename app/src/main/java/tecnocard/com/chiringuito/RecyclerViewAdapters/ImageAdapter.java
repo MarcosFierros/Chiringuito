@@ -1,5 +1,6 @@
-package tecnocard.com.chiringuito;
+package tecnocard.com.chiringuito.RecyclerViewAdapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -8,21 +9,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
+
+import tecnocard.com.chiringuito.Producto;
+import tecnocard.com.chiringuito.R;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.imageViewHolder> {
 
     private static List<Producto> productlist;
     private static List<Producto> finalList;
+    @SuppressLint("StaticFieldLeak")
     private static ReciboAdapter reciboAdapter;
-    TextView totalValueTextView;
+    private TextView totalValueTextView;
 
     public ImageAdapter(List<Producto> productlist, List<Producto> finalList, ReciboAdapter reciboAdapter, TextView totalValueTextView){
-        this.productlist = productlist;
-        this.finalList = finalList;
-        this.reciboAdapter = reciboAdapter;
+        ImageAdapter.productlist = productlist;
+        ImageAdapter.finalList = finalList;
+        ImageAdapter.reciboAdapter = reciboAdapter;
         this.totalValueTextView = totalValueTextView;
     }
 
@@ -31,13 +35,13 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.imageViewHol
     public ImageAdapter.imageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_layout, parent, false);
-        ImageAdapter.imageViewHolder myViewHolder = new ImageAdapter.imageViewHolder(view, parent.getContext());
 
-        return myViewHolder;
+        return new imageViewHolder(view, parent.getContext());
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(ImageAdapter.imageViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ImageAdapter.imageViewHolder holder, int position) {
 
         holder.name.setText(productlist.get(position).getNombre());
         holder.precio.setText("$" + productlist.get(position).getPrecio());
@@ -55,7 +59,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.imageViewHol
         ImageView image;
         Context context;
 
-        public imageViewHolder(View itemView, final Context context) {
+        imageViewHolder(View itemView, final Context context) {
 
             super(itemView);
             name = itemView.findViewById(R.id.nameProductoTV);
@@ -64,6 +68,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.imageViewHol
             this.context = context;
 
             image.setOnClickListener(new View.OnClickListener() {
+                @SuppressLint("SetTextI18n")
                 @Override
                 public void onClick(View view) {
                     System.out.println("LE ESTAS PICANDO");

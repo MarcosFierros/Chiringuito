@@ -1,5 +1,6 @@
-package tecnocard.com.chiringuito;
+package tecnocard.com.chiringuito.RecyclerViewAdapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -15,12 +16,15 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import tecnocard.com.chiringuito.Producto;
+import tecnocard.com.chiringuito.R;
+
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder> {
 
     private static List<Producto> list;
 
     public RecyclerAdapter(List<Producto> list){
-        this.list = list;
+        RecyclerAdapter.list = list;
     }
 
     @NonNull
@@ -28,13 +32,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_layout, parent, false);
-        MyViewHolder myViewHolder = new MyViewHolder(view, parent.getContext());
 
-        return myViewHolder;
+        return new MyViewHolder(view, parent.getContext());
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
         holder.name.setText(list.get(position).getNombre());
         holder.precio.setText("$" + list.get(position).getPrecio());
@@ -46,7 +50,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         return list.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView name, precio;
         EditText nameEdit, precioEdit;
@@ -54,7 +58,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         Context context;
 
 
-        public MyViewHolder(View itemView, final Context context) {
+        MyViewHolder(View itemView, final Context context) {
             super(itemView);
 
             name = itemView.findViewById(R.id.nameTextView);
@@ -128,7 +132,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         }
     }
 
-    public  void removeAt(int position, Context context) {
+    private void removeAt(int position, Context context) {
         list.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, list.size());
@@ -136,7 +140,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         toast.show();
     }
 
-    public void editAt(int position, String name, double price, Context context){
+    private void editAt(int position, String name, double price, Context context){
         list.get(position).setNombre(name);
         list.get(position).setPrecio(price);
         notifyItemChanged(position);
@@ -149,6 +153,5 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         notifyDataSetChanged();
     }
 
-    public static class ProductViewModel {
-    }
+
 }
