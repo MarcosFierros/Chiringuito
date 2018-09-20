@@ -5,6 +5,7 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Update;
 
 import java.util.List;
 
@@ -20,5 +21,10 @@ public interface ProductsDao {
     @Query("SELECT * FROM products_table")
     LiveData<List<Producto>> getAllProducts();
 
+    @Delete
+    void deleteProduct(Producto producto);
+
+    @Update
+    void updateProduct(Producto producto);
 
 }

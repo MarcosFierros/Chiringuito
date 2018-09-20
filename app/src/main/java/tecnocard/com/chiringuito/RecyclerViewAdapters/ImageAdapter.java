@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import tecnocard.com.chiringuito.Producto;
@@ -35,7 +37,6 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.imageViewHol
     public ImageAdapter.imageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_layout, parent, false);
-
         return new imageViewHolder(view, parent.getContext());
     }
 
@@ -53,7 +54,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.imageViewHol
         return productlist.size();
     }
 
-    public class imageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class imageViewHolder extends RecyclerView.ViewHolder {
 
         TextView name, precio;
         ImageView image;
@@ -71,10 +72,9 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.imageViewHol
                 @SuppressLint("SetTextI18n")
                 @Override
                 public void onClick(View view) {
-                    System.out.println("LE ESTAS PICANDO");
-                    reciboAdapter.notifyDataSetChanged();
                     Producto producto = productlist.get(getAdapterPosition());
                     finalList.add(producto);
+                    reciboAdapter.notifyDataSetChanged();
                     double oldTotal = Double.parseDouble(totalValueTextView.getText().toString().replace("$", ""));
                     double newTotal = oldTotal + producto.getPrecio();
                     totalValueTextView.setText("$ " + newTotal);
@@ -83,10 +83,6 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.imageViewHol
 
         }
 
-        @Override
-        public void onClick(View view) {
-
-        }
     }
 
     public void setProducts(List<Producto> productos){

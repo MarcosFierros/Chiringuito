@@ -2,16 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:foreground="?android:selectableItemBackground"
     android:orientation="vertical"
-    android:padding="50dp">
+    android:padding="1dp">
 
     <ImageView
         android:id="@+id/imageProductoTV"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        tools:src="@drawable/ic_menu_camera" />
+        tools:src="@drawable/ic_menu_camera"
+        android:contentDescription="@string/imagen_producto" />
 
     <TextView
         android:id="@+id/nameProductoTV"

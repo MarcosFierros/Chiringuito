@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:background="@color/orangePrimary"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+
+        <ImageView
+            android:id="@+id/image_title"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:accessibilityHeading="false"
+            android:adjustViewBounds="false"
+            app:srcCompat="@mipmap/ic_chiringuito_logo"
+            android:contentDescription="@string/image_title" />
+
+        <TextView
+            android:id="@+id/toolbar_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:text="@string/c_h_i_r_i_n_g_u_i_t_o"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            tools:ignore="RtlHardcoded" />
+
+
+
+</android.support.v7.widget.Toolbar>

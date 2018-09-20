@@ -20,8 +20,16 @@ public class ProductViewModel extends AndroidViewModel {
 
     public LiveData<List<Producto>> getAllProducts() { return mAllProducts; }
 
-    public void insert(Producto producto) { mRepository.insert(producto); }
+    public void insert(Producto producto) {
+        mRepository.insert(producto); }
 
+    public void delete(Producto producto){
+        mRepository.delete(producto);
+    }
+
+    public void edit(Producto producto) {
+        mRepository.update(producto);
+    }
 
 }
 

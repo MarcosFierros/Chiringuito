@@ -23,7 +23,24 @@ public class Producto implements Comparable<Producto>{
     private int qty;
     private boolean collapsed;
 
+    public Producto(){
+        this.nombre = "";
+        this.precio = 0.0;
+        this.imageSrc = R.drawable.ic_menu_camera;
+        this.qty = 1;
+        this.collapsed = false;
+    }
+
+
     public Producto(String nombre, double precio){
+        this.nombre = nombre;
+        this.precio = precio;
+        this.imageSrc = R.drawable.ic_menu_camera;
+        this.qty = 1;
+        this.collapsed = false;
+    }
+
+    public Producto(String nombre, double precio, int imgSrc){
         this.nombre = nombre;
         this.precio = precio;
         this.imageSrc = R.drawable.ic_menu_camera;
@@ -96,4 +113,5 @@ public class Producto implements Comparable<Producto>{
         else
             return this.getQty() - producto.getQty();
     }
+
 }

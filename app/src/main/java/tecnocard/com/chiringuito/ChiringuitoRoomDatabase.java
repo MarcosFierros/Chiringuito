@@ -53,15 +53,15 @@ public abstract class ChiringuitoRoomDatabase extends RoomDatabase {
         protected Void doInBackground(Void... voids) {
 
             mDao.deleteAll();
-            Producto p = new Producto("Papas",15.0);
+            Producto p = new Producto("Papas",15.0, R.drawable.papas);
             mDao.insert(p);
-            p = new Producto("Tostilocos", 25.0);
+            p = new Producto("Tostilocos", 25.0, R.drawable.tostilocos);
             mDao.insert(p);
-            p = new Producto("Frutas", 20.5);
+            p = new Producto("Frutas", 20.5, R.drawable.frutas);
             mDao.insert(p);
-            p = new Producto("Verduras", 22.5);
+            p = new Producto("Verduras", 22.5, R.drawable.verduras);
             mDao.insert(p);
-            p = new Producto("Conchitas", 17.5);
+            p = new Producto("Conchitas", 17.5, R.drawable.conchitas);
             mDao.insert(p);
 
             return null;

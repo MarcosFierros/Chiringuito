@@ -21,6 +21,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import tecnocard.com.chiringuito.ProductViewModel;
@@ -37,15 +39,18 @@ public class VentasFragment extends Fragment {
     private ImageAdapter imageAdapter;
     private ReciboAdapter reciboAdapter;
 
+    private List<Producto> finalList;
+    private List<Producto> productoList;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view  = inflater.inflate(R.layout.fragment_ventas, container, false);
+        View view = inflater.inflate(R.layout.fragment_ventas, container, false);
 
+        finalList = new ArrayList<>();
+        productoList = new ArrayList<>();
 
-        List<Producto> finalList = new ArrayList<>();
-        List<Producto> productoList = new ArrayList<>();
         final TextView totalValueTextView = view.findViewById(R.id.totalValueTxtView);
         RecyclerView recyclerView = view.findViewById(R.id.imageRecyclerView);
         recyclerView.setHasFixedSize(true);
@@ -55,26 +60,29 @@ public class VentasFragment extends Fragment {
                 new DividerItemDecoration(view.getContext(), DividerItemDecoration.VERTICAL));
         layoutManager = new GridLayoutManager(view.getContext(), 2);
         recyclerView.setLayoutManager(layoutManager);
+
         reciboAdapter = new ReciboAdapter(finalList, productoList, totalValueTextView);
         imageAdapter = new ImageAdapter(productoList, finalList, reciboAdapter, totalValueTextView);
         recyclerView.setAdapter(imageAdapter);
-
-        RecyclerView reciboRecyclerView = view.findViewById(R.id.finalListRecyclerView);
-        reciboRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        reciboRecyclerView.setHasFixedSize(true);
-        reciboRecyclerView.addItemDecoration(
-                new DividerItemDecoration(view.getContext(),DividerItemDecoration.HORIZONTAL));
-        layoutManager = new LinearLayoutManager(view.getContext());
-        reciboRecyclerView.setLayoutManager(layoutManager);
-        reciboRecyclerView.setAdapter(reciboAdapter);
 
         ProductViewModel productViewModel = ViewModelProviders.of(this).get(ProductViewModel.class);
         productViewModel.getAllProducts().observe(this, new Observer<List<Producto>>() {
             @Override
             public void onChanged(@Nullable List<Producto> productos) {
+                productoList = productos;
                 imageAdapter.setProducts(productos);
             }
         });
+
+        RecyclerView reciboRecyclerView = view.findViewById(R.id.finalListRecyclerView);
+        reciboRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        reciboRecyclerView.setHasFixedSize(true);
+        reciboRecyclerView.addItemDecoration(
+                new DividerItemDecoration(view.getContext(), DividerItemDecoration.HORIZONTAL));
+        layoutManager = new LinearLayoutManager(view.getContext());
+        reciboRecyclerView.setLayoutManager(layoutManager);
+        reciboRecyclerView.setAdapter(reciboAdapter);
+
 
         Button readyBtn = view.findViewById(R.id.readyBtn);
         readyBtn.setOnClickListener(new View.OnClickListener() {
@@ -92,7 +100,7 @@ public class VentasFragment extends Fragment {
                 RecyclerView alertRecyclerView = alertView.findViewById(R.id.alertRv);
                 layoutManager = new LinearLayoutManager(view.getContext());
                 alertRecyclerView.setLayoutManager(layoutManager);
-                alertAdapter = new AlertAdapter(reciboAdapter.Collapse());
+                alertAdapter = new AlertAdapter(Collapse());
                 alertRecyclerView.setAdapter(alertAdapter);
 
                 builder.setView(alertView);
@@ -116,6 +124,31 @@ public class VentasFragment extends Fragment {
         });
 
         return view;
+    }
+
+    public List<Producto> Collapse(){
+
+        List<Producto> collapsedList = new ArrayList<>();
+        for(Producto p: productoList){
+            p.setQty(0);
+            collapsedList.add(p);
+        }
+
+        for(Producto p1: finalList){
+            for(Producto p2: collapsedList){
+                if(p1.compareTo(p2) == 0)
+                    p2.addQty();
+            }
+        }
+
+        for (Iterator<Producto> iterator = collapsedList.iterator(); iterator.hasNext(); ) {
+            Producto p = iterator.next();
+            if(p.getQty() ==0){
+                iterator.remove();
+            }
+        }
+
+        return collapsedList;
     }
 
 }

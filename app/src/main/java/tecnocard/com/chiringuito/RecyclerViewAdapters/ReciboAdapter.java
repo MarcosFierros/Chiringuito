@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -102,29 +103,6 @@ public class ReciboAdapter extends RecyclerView.Adapter<ReciboAdapter.MyViewHold
         totalValueTextView.setText("$ 0.00");
     }
 
-    public List<Producto> Collapse(){
 
-        List<Producto> collapsedList = new ArrayList<>();
-        for(Producto p: productsList){
-            p.setQty(0);
-            collapsedList.add(p);
-        }
-
-        for(Producto p1: compraList){
-            for(Producto p2: collapsedList){
-                if(p1.compareTo(p2) == 0)
-                    p2.addQty();
-            }
-        }
-
-        for (Iterator<Producto> iterator = collapsedList.iterator(); iterator.hasNext(); ) {
-            Producto p = iterator.next();
-            if(p.getQty() ==0){
-                iterator.remove();
-            }
-        }
-
-        return collapsedList;
-    }
 
 }

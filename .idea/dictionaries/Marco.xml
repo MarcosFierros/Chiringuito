@@ -2,11 +2,20 @@
   <dictionary name="Marco">
     <words>
       <w>chiringuito</w>
+      <w>cobro</w>
+      <w>compra</w>
+      <w>editado</w>
+      <w>eliminado</w>
       <w>hacer</w>
+      <w>imagen</w>
       <w>nombre</w>
       <w>precio</w>
+      <w>productlist</w>
       <w>producto</w>
       <w>productos</w>
+      <w>recargas</w>
+      <w>recibo</w>
+      <w>ventas</w>
     </words>
   </dictionary>
 </component>
