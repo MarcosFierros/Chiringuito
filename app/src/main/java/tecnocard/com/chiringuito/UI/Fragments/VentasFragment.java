@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,11 +20,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import tecnocard.com.chiringuito.ProductViewModel;
 import tecnocard.com.chiringuito.Producto;
@@ -31,6 +33,8 @@ import tecnocard.com.chiringuito.R;
 import tecnocard.com.chiringuito.RecyclerViewAdapters.AlertAdapter;
 import tecnocard.com.chiringuito.RecyclerViewAdapters.ImageAdapter;
 import tecnocard.com.chiringuito.RecyclerViewAdapters.ReciboAdapter;
+import tecnocard.com.chiringuito.UserViewModel;
+import tecnocard.com.chiringuito.Usuario;
 
 public class VentasFragment extends Fragment {
 
@@ -42,14 +46,28 @@ public class VentasFragment extends Fragment {
     private List<Producto> finalList;
     private List<Producto> productoList;
 
+    UserViewModel mUserViewModel;
+    private Usuario usuario;
+    View view;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_ventas, container, false);
+        view = inflater.inflate(R.layout.fragment_ventas, container, false);
 
         finalList = new ArrayList<>();
         productoList = new ArrayList<>();
+
+        mUserViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
+        usuario = null;
+        try {
+            usuario = mUserViewModel.get(getUid());
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         final TextView totalValueTextView = view.findViewById(R.id.totalValueTxtView);
         RecyclerView recyclerView = view.findViewById(R.id.imageRecyclerView);
@@ -86,16 +104,25 @@ public class VentasFragment extends Fragment {
 
         Button readyBtn = view.findViewById(R.id.readyBtn);
         readyBtn.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
 
                 LayoutInflater inflater = LayoutInflater.from(view.getContext());
                 @SuppressLint("InflateParams") View alertView = inflater.inflate(R.layout.alert_layout, null);
 
+                double saldo = usuario.getSaldo();
+                double total = Double.parseDouble(totalValueTextView.getText().toString().replace("$", ""));
+                final double newSaldo = saldo-total;
+
                 TextView totalAlertTxtView = alertView.findViewById(R.id.alertTotalValueTV);
-                totalAlertTxtView.setText(totalValueTextView.getText());
+                totalAlertTxtView.setText("$ " + String.valueOf(total));
+                TextView saldoAlertTxtView = alertView.findViewById(R.id.alertSaldoValueTV);
+                saldoAlertTxtView.setText("$ " + String.valueOf(saldo));
+                final TextView newSaldoAlertTxtView = alertView.findViewById(R.id.alertNewSaldoValueTV);
+                newSaldoAlertTxtView.setText("$ " + String.valueOf(newSaldo));
 
                 RecyclerView alertRecyclerView = alertView.findViewById(R.id.alertRv);
                 layoutManager = new LinearLayoutManager(view.getContext());
@@ -107,7 +134,8 @@ public class VentasFragment extends Fragment {
                 builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-//                        Hacer el cobro en sql
+                        usuario.setSaldo(newSaldo);
+                        mUserViewModel.edit(usuario);
                         reciboAdapter.removeAll();
                     }
                 });
@@ -117,7 +145,19 @@ public class VentasFragment extends Fragment {
 
                     }
                 });
-                AlertDialog alertDialog = builder.create();
+                final AlertDialog alertDialog = builder.create();
+                alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialog) {
+                        if(newSaldo < 0) {
+                            newSaldoAlertTxtView.setTextColor(Color.RED);
+                            alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                            Toast toast = Toast.makeText(view.getContext(), "SALDO INSUFICIENTE",Toast.LENGTH_SHORT );
+                            toast.show();
+                        }
+                    }
+                });
+
 
                 alertDialog.show();  //<-- See This!
             }
@@ -150,5 +190,11 @@ public class VentasFragment extends Fragment {
 
         return collapsedList;
     }
+
+    static Integer getUid(){
+//        Cambiar esto cuando tengamos lo de nfc
+        return 1;
+    }
+
 
 }

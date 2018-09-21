@@ -36,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_containter, new VentasFragment()).commit();
 
+
+
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =

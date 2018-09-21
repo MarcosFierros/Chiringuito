@@ -8,10 +8,11 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
-@Database(entities = {Producto.class}, version = 1)
+@Database(entities = {Producto.class, Usuario.class}, version = 2)
 public abstract class ChiringuitoRoomDatabase extends RoomDatabase {
 
     public abstract ProductsDao productsDao();
+    public abstract UserDao userDao();
     private static ChiringuitoRoomDatabase INSTANCE;
 
     public static ChiringuitoRoomDatabase getDatabase(final Context context){
@@ -21,7 +22,7 @@ public abstract class ChiringuitoRoomDatabase extends RoomDatabase {
 
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             ChiringuitoRoomDatabase.class, "chiringuito_database")
-                            .addCallback(sRoomDatabaseCallback)
+                            .addCallback(sRoomDatabaseCallback).fallbackToDestructiveMigration()
                             .build();
 
                 }
@@ -44,9 +45,11 @@ public abstract class ChiringuitoRoomDatabase extends RoomDatabase {
     private static class PopulateDBAsync extends AsyncTask<Void, Void, Void> {
 
         private final ProductsDao mDao;
+        private final UserDao mUDao;
 
         PopulateDBAsync(ChiringuitoRoomDatabase db){
             mDao = db.productsDao();
+            mUDao = db.userDao();
         }
 
         @Override
@@ -63,6 +66,10 @@ public abstract class ChiringuitoRoomDatabase extends RoomDatabase {
             mDao.insert(p);
             p = new Producto("Conchitas", 17.5, R.drawable.conchitas);
             mDao.insert(p);
+
+            mUDao.deleteAll();
+            Usuario u = new Usuario(1, 100);
+            mUDao.insert(u);
 
             return null;
         }
