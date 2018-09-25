@@ -1,9 +1,7 @@
 package tecnocard.com.chiringuito.UI.Fragments;
 
 import android.annotation.SuppressLint;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -50,6 +48,7 @@ public class VentasFragment extends Fragment {
     private Usuario usuario;
     View view;
 
+    @SuppressLint("SetTextI18n")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -84,12 +83,9 @@ public class VentasFragment extends Fragment {
         recyclerView.setAdapter(imageAdapter);
 
         ProductViewModel productViewModel = ViewModelProviders.of(this).get(ProductViewModel.class);
-        productViewModel.getAllProducts().observe(this, new Observer<List<Producto>>() {
-            @Override
-            public void onChanged(@Nullable List<Producto> productos) {
-                productoList = productos;
-                imageAdapter.setProducts(productos);
-            }
+        productViewModel.getAllProducts().observe(this, productos -> {
+            productoList = productos;
+            imageAdapter.setProducts(productos);
         });
 
         RecyclerView reciboRecyclerView = view.findViewById(R.id.finalListRecyclerView);
@@ -103,64 +99,50 @@ public class VentasFragment extends Fragment {
 
 
         Button readyBtn = view.findViewById(R.id.readyBtn);
-        readyBtn.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onClick(final View view) {
+        readyBtn.setOnClickListener(view -> {
 
-                final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+            final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
 
-                LayoutInflater inflater = LayoutInflater.from(view.getContext());
-                @SuppressLint("InflateParams") View alertView = inflater.inflate(R.layout.alert_layout, null);
+            LayoutInflater inflater1 = LayoutInflater.from(view.getContext());
+            @SuppressLint("InflateParams") View alertView = inflater1.inflate(R.layout.alert_layout, null);
 
-                double saldo = usuario.getSaldo();
-                double total = Double.parseDouble(totalValueTextView.getText().toString().replace("$", ""));
-                final double newSaldo = saldo-total;
+            double saldo = usuario.getSaldo();
+            double total = Double.parseDouble(totalValueTextView.getText().toString().replace("$", ""));
+            final double newSaldo = saldo-total;
 
-                TextView totalAlertTxtView = alertView.findViewById(R.id.alertTotalValueTV);
-                totalAlertTxtView.setText("$ " + String.valueOf(total));
-                TextView saldoAlertTxtView = alertView.findViewById(R.id.alertSaldoValueTV);
-                saldoAlertTxtView.setText("$ " + String.valueOf(saldo));
-                final TextView newSaldoAlertTxtView = alertView.findViewById(R.id.alertNewSaldoValueTV);
-                newSaldoAlertTxtView.setText("$ " + String.valueOf(newSaldo));
+            TextView totalAlertTxtView = alertView.findViewById(R.id.alertTotalValueTV);
+            totalAlertTxtView.setText("$ " + String.valueOf(total));
+            TextView saldoAlertTxtView = alertView.findViewById(R.id.alertSaldoValueTV);
+            saldoAlertTxtView.setText("$ " + String.valueOf(saldo));
+            final TextView newSaldoAlertTxtView = alertView.findViewById(R.id.alertNewSaldoValueTV);
+            newSaldoAlertTxtView.setText("$ " + String.valueOf(newSaldo));
 
-                RecyclerView alertRecyclerView = alertView.findViewById(R.id.alertRv);
-                layoutManager = new LinearLayoutManager(view.getContext());
-                alertRecyclerView.setLayoutManager(layoutManager);
-                alertAdapter = new AlertAdapter(Collapse());
-                alertRecyclerView.setAdapter(alertAdapter);
+            RecyclerView alertRecyclerView = alertView.findViewById(R.id.alertRv);
+            layoutManager = new LinearLayoutManager(view.getContext());
+            alertRecyclerView.setLayoutManager(layoutManager);
+            alertAdapter = new AlertAdapter(Collapse());
+            alertRecyclerView.setAdapter(alertAdapter);
 
-                builder.setView(alertView);
-                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        usuario.setSaldo(newSaldo);
-                        mUserViewModel.edit(usuario);
-                        reciboAdapter.removeAll();
-                    }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+            builder.setView(alertView);
+            builder.setPositiveButton("Ok", (dialogInterface, i) -> {
+                usuario.setSaldo(newSaldo);
+                mUserViewModel.edit(usuario);
+                reciboAdapter.removeAll();
+            });
+            builder.setNegativeButton("Cancel", (dialogInterface, i) -> {
 
-                    }
-                });
-                final AlertDialog alertDialog = builder.create();
-                alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-                    @Override
-                    public void onShow(DialogInterface dialog) {
-                        if(newSaldo < 0) {
-                            newSaldoAlertTxtView.setTextColor(Color.RED);
-                            alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
-                            Toast toast = Toast.makeText(view.getContext(), "SALDO INSUFICIENTE",Toast.LENGTH_SHORT );
-                            toast.show();
-                        }
-                    }
-                });
+            });
+            final AlertDialog alertDialog = builder.create();
+            alertDialog.setOnShowListener(dialog -> {
+                if(newSaldo < 0) {
+                    newSaldoAlertTxtView.setTextColor(Color.RED);
+                    alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                    Toast toast = Toast.makeText(view.getContext(), "SALDO INSUFICIENTE",Toast.LENGTH_SHORT );
+                    toast.show();
+                }
+            });
 
-
-                alertDialog.show();  //<-- See This!
-            }
+            alertDialog.show();  //<-- See This!
         });
 
         return view;

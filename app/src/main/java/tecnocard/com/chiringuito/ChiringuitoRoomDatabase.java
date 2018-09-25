@@ -8,7 +8,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
-@Database(entities = {Producto.class, Usuario.class}, version = 2)
+@Database(entities = {Producto.class, Usuario.class}, exportSchema = false, version = 2)
 public abstract class ChiringuitoRoomDatabase extends RoomDatabase {
 
     public abstract ProductsDao productsDao();

@@ -2,6 +2,7 @@ package tecnocard.com.chiringuito;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
@@ -23,6 +24,7 @@ public class Producto implements Comparable<Producto>{
     private int qty;
     private boolean collapsed;
 
+    @Ignore
     public Producto(){
         this.nombre = "";
         this.precio = 0.0;
@@ -40,6 +42,7 @@ public class Producto implements Comparable<Producto>{
         this.collapsed = false;
     }
 
+    @Ignore
     public Producto(String nombre, double precio, int imgSrc){
         this.nombre = nombre;
         this.precio = precio;

@@ -7,6 +7,7 @@
     android:layout_height="?attr/actionBarSize"
     android:background="@color/orangePrimary"
     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
 
@@ -14,7 +15,6 @@
             android:id="@+id/image_title"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:accessibilityHeading="false"
             android:adjustViewBounds="false"
             app:srcCompat="@mipmap/ic_chiringuito_logo"
             android:contentDescription="@string/image_title" />
