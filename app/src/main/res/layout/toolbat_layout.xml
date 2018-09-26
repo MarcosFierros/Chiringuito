@@ -6,29 +6,35 @@
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
     android:background="@color/orangePrimary"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    android:textAlignment="gravity"
 
+    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    app:layout_constraintStart_toEndOf="@id/image_title"
+    app:layout_constraintStart_toStartOf="@id/toolbar_title"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
 
-        <ImageView
-            android:id="@+id/image_title"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:adjustViewBounds="false"
-            app:srcCompat="@mipmap/ic_chiringuito_logo"
-            android:contentDescription="@string/image_title" />
+    <ImageView
+        android:id="@+id/image_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/image_title"
+        android:paddingLeft="45dp"
+        app:srcCompat="@mipmap/ic_chiringuito_logo" />
 
-        <TextView
-            android:id="@+id/toolbar_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="left"
-            android:text="@string/c_h_i_r_i_n_g_u_i_t_o"
-            android:textColor="@android:color/white"
-            android:textSize="20sp"
-            tools:ignore="RtlHardcoded" />
-
+    <TextView
+        android:id="@+id/toolbar_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fontFamily="sans-serif-smallcaps"
+        android:gravity="left|center"
+        android:lineSpacingExtra="18dp"
+        android:paddingLeft="10dp"
+        android:text="@string/c_h_i_r_i_n_g_u_i_t_o"
+        android:textColor="@android:color/white"
+        android:textSize="24sp"
+        android:typeface="normal"
+        tools:ignore="RtlHardcoded" />
 
 
 </android.support.v7.widget.Toolbar>
