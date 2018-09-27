@@ -1,16 +1,12 @@
 package tecnocard.com.chiringuito.UI.Fragments;
 
 import android.annotation.SuppressLint;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.DialogInterface;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -21,28 +17,19 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import tecnocard.com.chiringuito.ProductViewModel;
 import tecnocard.com.chiringuito.Producto;
 import tecnocard.com.chiringuito.R;
-import tecnocard.com.chiringuito.RecyclerViewAdapters.AlertAdapter;
 import tecnocard.com.chiringuito.RecyclerViewAdapters.RecyclerAdapter;
 import tecnocard.com.chiringuito.RecyclerViewAdapters.RecyclerItemTouchHelper;
-import tecnocard.com.chiringuito.UI.MainActivity;
 
 public class ProductosFragment extends Fragment implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
 
-    private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager layoutManager;
     private RecyclerAdapter adapter;
-    private ProductViewModel mProductViewModel;
-    private List<Producto> list;
     private View view;
 
     @Nullable
@@ -50,15 +37,11 @@ public class ProductosFragment extends Fragment implements RecyclerItemTouchHelp
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_productos, container, false);
 
-        list = new ArrayList<>();
-        mProductViewModel = ViewModelProviders.of(this).get(ProductViewModel.class);
-        mProductViewModel.getAllProducts().observe(this, productos -> {
-            adapter.setProducts(productos);
-            list = productos;
-        });
+        ProductViewModel mProductViewModel = ViewModelProviders.of(this).get(ProductViewModel.class);
+        mProductViewModel.getAllProducts().observe(this, productos -> adapter.setProducts(productos));
 
-        recyclerView = view.findViewById(R.id.recyclerView);
-        layoutManager = new LinearLayoutManager(view.getContext());
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(view.getContext());
         recyclerView.setLayoutManager(layoutManager);
 
         adapter = new RecyclerAdapter(new ArrayList<>(), mProductViewModel);
@@ -112,7 +95,6 @@ public class ProductosFragment extends Fragment implements RecyclerItemTouchHelp
                 }
 
 
-
             });
             builder.setNegativeButton("Cancelar", (dialogInterface, i) -> {
 
@@ -129,23 +111,18 @@ public class ProductosFragment extends Fragment implements RecyclerItemTouchHelp
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
 
-        final Producto deletedProduct = list.get(viewHolder.getAdapterPosition());
-        String name = deletedProduct.getNombre();
         int index = viewHolder.getAdapterPosition();
 
-        System.out.println("HOLA TAROLA");
-        ((RecyclerAdapter.MyViewHolder) viewHolder).changeBackgroundAt(true);
-
         if(direction == ItemTouchHelper.LEFT) {
-            adapter.removeAt(index, this.getContext());
 
-            Snackbar snackbar = Snackbar.make
-                    (view, name + " Eliminado", Snackbar.LENGTH_LONG);
-            snackbar.setAction("DESHACER", v -> {
-                adapter.add(this.getContext(), deletedProduct, index);
-            });
-            snackbar.setActionTextColor(Color.YELLOW);
-            snackbar.show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+            builder.setMessage("¿Seguro que quieres eliminar el producto?");
+            builder.setPositiveButton("Ok", (dialogInterface, i) -> adapter.removeAt(index, this.getContext()));
+            builder.setNegativeButton("Cancelar", (dialogInterface, i) -> adapter.notifyDataSetChanged());
+
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+
         } else if(direction == ItemTouchHelper.RIGHT) {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
@@ -158,14 +135,12 @@ public class ProductosFragment extends Fragment implements RecyclerItemTouchHelp
                 EditText newPrice = alertView.findViewById(R.id.newPriceEdit);
                 String name2 = newName.getText().toString();
                 String priceString = newPrice.getText().toString();
-                if(!name2.matches("") || !priceString.matches("")){
-                    Producto newProduct = new Producto(name2, Double.parseDouble(priceString));
+                if(!name2.matches("") && !priceString.matches(""))
                     adapter.editAt(index, name2, Double.parseDouble(priceString), this.getContext());
-                }
+                else
+                    adapter.notifyDataSetChanged();
             });
-            builder.setNegativeButton("Cancelar", (dialogInterface, i) -> {
-                adapter.notifyDataSetChanged();
-            });
+            builder.setNegativeButton("Cancelar", (dialogInterface, i) -> adapter.notifyDataSetChanged());
 
             AlertDialog alertDialog = builder.create();
             alertDialog.show();

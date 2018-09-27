@@ -33,7 +33,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
 
     public RecyclerAdapter(List<Producto> list, ProductViewModel mProductViewModel){
-        RecyclerAdapter.list = list;
+            RecyclerAdapter.list = list;
         this.mProductViewModel = mProductViewModel;
     }
 
@@ -49,8 +49,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
-        holder.name.setText(list.get(position).getNombre());
-        holder.precio.setText("$" + list.get(position).getPrecio());
+        Producto producto = list.get(position);
+
+        holder.image.setImageResource(producto.getImageSrc());
+        holder.name.setText(producto.getNombre());
+        holder.precio.setText("$" + producto.getPrecio());
 
     }
 
@@ -59,23 +62,25 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         return list.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView name, precio;
+        ImageView image;
         Context context;
         RelativeLayout viewBackground1, viewBackground2, viewForeground;
 
         MyViewHolder(View itemView, final Context context) {
             super(itemView);
             name = itemView.findViewById(R.id.nameTextView);
-            precio = itemView.findViewById(R.id.precioTextView);
+            precio = itemView.findViewById(R.id.precioTextView12);
             viewBackground1 = itemView.findViewById(R.id.view_background1);
             viewBackground2 = itemView.findViewById(R.id.view_background2);
             viewForeground = itemView.findViewById(R.id.view_foreground);
+            image = itemView.findViewById(R.id.imageProducto);
             this.context = context;
         }
 
-        public void changeBackgroundAt(boolean b){
+        void changeBackgroundAt(boolean b){
             if(b) {
                 viewBackground1.setVisibility(View.VISIBLE);
                 viewBackground2.setVisibility(View.INVISIBLE);

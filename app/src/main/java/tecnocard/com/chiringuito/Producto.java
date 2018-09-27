@@ -46,7 +46,7 @@ public class Producto implements Comparable<Producto>{
     public Producto(String nombre, double precio, int imgSrc){
         this.nombre = nombre;
         this.precio = precio;
-        this.imageSrc = R.drawable.ic_menu_camera;
+        this.imageSrc = imgSrc;
         this.qty = 1;
         this.collapsed = false;
     }
@@ -73,7 +73,7 @@ public class Producto implements Comparable<Producto>{
         this.precio = precio;
     }
 
-    public void setImageSrc(int imageSrc) {
+    void setImageSrc(int imageSrc) {
         this.imageSrc = imageSrc;
     }
 
@@ -81,7 +81,7 @@ public class Producto implements Comparable<Producto>{
         this.qty = qty;
     }
 
-    public void setCollapsed(boolean collapsed) {
+    void setCollapsed(boolean collapsed) {
         this.collapsed = collapsed;
     }
 
@@ -105,7 +105,7 @@ public class Producto implements Comparable<Producto>{
         return qty;
     }
 
-    public boolean isCollapsed() {
+    boolean isCollapsed() {
         return collapsed;
     }
 

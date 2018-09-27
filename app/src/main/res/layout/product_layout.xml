@@ -9,27 +9,28 @@
         android:id="@+id/view_background1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/holo_green_light">
+        android:background="#38B44A">
 
 
         <ImageView
             android:id="@+id/edit_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/padd_10"
-            app:srcCompat="@drawable/ic_edit" />
+            android:layout_marginStart="@dimen/padd_10"
+            app:srcCompat="@drawable/ic_edit"
+            android:contentDescription="@string/descripcion" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/padd_10"
-            android:layout_toRightOf="@id/edit_icon"
-            android:text="EDITAR"
+            android:layout_marginStart="@dimen/padd_10"
+            android:layout_toEndOf="@id/edit_icon"
+            android:text="@string/editar"
             android:textColor="#fff"
-            android:textSize="13dp" />
+            android:textSize="13sp" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -44,20 +45,21 @@
             android:id="@+id/delete_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/padd_10"
-            app:srcCompat="@drawable/ic_delete_black_24dp" />
+            android:layout_marginEnd="@dimen/padd_10"
+            app:srcCompat="@drawable/ic_delete_black_24dp"
+            android:contentDescription="@string/hola_tarola" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/padd_10"
-            android:layout_toLeftOf="@id/delete_icon"
-            android:text="BORRAR"
+            android:layout_marginEnd="@dimen/padd_10"
+            android:layout_toStartOf="@id/delete_icon"
+            android:text="@string/borrar"
             android:textColor="#fff"
-            android:textSize="13dp" />
+            android:textSize="13sp" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -67,15 +69,30 @@
         android:background="@color/cardview_light_background"
         android:visibility="visible">
 
-        <TextView
-            android:id="@+id/precioTextView"
+        <android.support.v7.widget.CardView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
+            android:layout_margin="10dp"
+            app:cardCornerRadius="10dp">
+
+            <ImageView
+                android:id="@+id/imageProducto"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:contentDescription="@string/imagen_producto"
+                tools:src="@drawable/ic_menu_camera" />
+        </android.support.v7.widget.CardView>
+
+        <TextView
+            android:id="@+id/precioTextView12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_marginEnd="93dp"
-            android:paddingBottom="20dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="44dp"
             android:paddingTop="24dp"
+            android:paddingBottom="20dp"
             android:text="@string/precio"
             android:textColor="@color/colorAccent"
             android:textSize="18sp"
@@ -85,7 +102,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.12"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/nameTextView" />
+            app:layout_constraintTop_toBottomOf="@+id/nameTextView"
+            tools:ignore="RelativeOverlap" />
 
         <TextView
             android:id="@+id/nameTextView"
@@ -93,9 +111,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="49dp"
-            android:paddingBottom="20dp"
+            android:layout_marginStart="138dp"
+            android:layout_marginTop="9dp"
             android:paddingTop="20dp"
+            android:paddingBottom="20dp"
             android:text="@string/nombre"
             android:textSize="24sp"
             android:visibility="visible"

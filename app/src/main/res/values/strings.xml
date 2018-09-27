@@ -23,7 +23,6 @@
     <string name="_0_0">$ 0.0</string>
     <string name="delete_image">Delete image</string>
     <string name="edit_button">edit button</string>
-    <string name="precio">$ precio</string>
     <string name="imagen_producto">imagen producto</string>
     <string name="verifique_su_orden">Verifique su orden:</string>
     <string name="total2">TOTAL:</string>
@@ -45,4 +44,13 @@
     <string name="_20">$20</string>
     <string name="saldo12">SALDO:</string>
     <string name="nuevo_saldo">NUEVO SALDO:</string>
+    <string name="editar">EDITAR</string>
+    <string name="borrar">BORRAR</string>
+    <string name="name">namer</string>
+    <string name="precio">precioe</string>
+    <string name="delete">xead</string>
+    <string name="descripcion">Descripcion</string>
+    <string name="hola_tarola">HOLA TAROLA</string>
+    <string name="lista_productos">Lista de Productos</string>
+
 </resources>

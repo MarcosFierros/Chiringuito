@@ -62,9 +62,7 @@ public class VentasFragment extends Fragment {
         usuario = null;
         try {
             usuario = mUserViewModel.get(getUid());
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
 
@@ -75,7 +73,7 @@ public class VentasFragment extends Fragment {
                 new DividerItemDecoration(view.getContext(), DividerItemDecoration.HORIZONTAL));
         recyclerView.addItemDecoration(
                 new DividerItemDecoration(view.getContext(), DividerItemDecoration.VERTICAL));
-        layoutManager = new GridLayoutManager(view.getContext(), 2);
+        layoutManager = new GridLayoutManager(view.getContext(), 4);
         recyclerView.setLayoutManager(layoutManager);
 
         reciboAdapter = new ReciboAdapter(finalList, productoList, totalValueTextView);

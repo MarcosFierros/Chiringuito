@@ -45,7 +45,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="500dp"
-        android:layout_height="820dp"
+        android:layout_height="500dp"
         android:layout_alignStart="@+id/fab"
         android:layout_alignParentTop="true"
         android:layout_gravity="center"
@@ -58,7 +58,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.32999998" />
+        app:layout_constraintVertical_bias="0.748" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
