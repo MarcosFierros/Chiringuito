@@ -34,8 +34,12 @@ public class UserViewModel extends AndroidViewModel{
         mRepository.update(usuario);
     }
 
-    public Usuario get(Integer id) throws ExecutionException, InterruptedException {
-        return mRepository.get(id);
+    public Usuario get(String uid) throws ExecutionException, InterruptedException {
+        return mRepository.get(uid);
+    }
+
+    public boolean userExists(String uid) throws ExecutionException, InterruptedException {
+        return mRepository.exists(uid) > 0;
     }
 
 }

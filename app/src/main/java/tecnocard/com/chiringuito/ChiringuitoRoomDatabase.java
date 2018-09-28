@@ -8,14 +8,14 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
-@Database(entities = {Producto.class, Usuario.class}, exportSchema = false, version = 2)
+@Database(entities = {Producto.class, Usuario.class}, exportSchema = false, version = 3)
 public abstract class ChiringuitoRoomDatabase extends RoomDatabase {
 
     public abstract ProductsDao productsDao();
     public abstract UserDao userDao();
     private static ChiringuitoRoomDatabase INSTANCE;
 
-    public static ChiringuitoRoomDatabase getDatabase(final Context context){
+    static ChiringuitoRoomDatabase getDatabase(final Context context){
         if(INSTANCE == null){
             synchronized (ChiringuitoRoomDatabase.class){
                 if (INSTANCE == null) {
@@ -68,7 +68,7 @@ public abstract class ChiringuitoRoomDatabase extends RoomDatabase {
             mDao.insert(p);
 
             mUDao.deleteAll();
-            Usuario u = new Usuario(1, 100);
+            Usuario u = new Usuario("1", 100);
             mUDao.insert(u);
 
             return null;

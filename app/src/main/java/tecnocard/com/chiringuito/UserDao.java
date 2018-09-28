@@ -21,8 +21,8 @@ public interface UserDao {
     @Query("SELECT * FROM user_table")
     LiveData<List<Usuario>> getAllUsers();
 
-    @Query("SELECT * FROM user_table WHERE uid == :id")
-    Usuario getUser(int id);
+    @Query("SELECT * FROM user_table WHERE user_uid == :id")
+    Usuario getUser(String id);
 
     @Query("SELECT COUNT(*) FROM user_table")
     int getUserCount();
@@ -32,5 +32,8 @@ public interface UserDao {
 
     @Update
     void updateUser(Usuario usuario);
+
+    @Query("SELECT COUNT(*) FROM user_table WHERE user_uid == :id")
+    int userExists(String id);
 
 }

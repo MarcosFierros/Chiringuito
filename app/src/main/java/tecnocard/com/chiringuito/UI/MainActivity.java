@@ -1,23 +1,21 @@
 package tecnocard.com.chiringuito.UI;
 
 import android.content.Intent;
+import android.nfc.NfcAdapter;
+import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
-import com.nxp.nfclib.CardType;
 import com.nxp.nfclib.NxpNfcLib;
-import com.nxp.nfclib.desfire.DESFireFactory;
-import com.nxp.nfclib.desfire.IDESFireEV1;
+import com.nxp.nfclib.defaultimpl.Utilities;
+import com.nxp.nfclib.interfaces.IUtility;
 
 import tecnocard.com.chiringuito.R;
 import tecnocard.com.chiringuito.UI.Fragments.ProductosFragment;
@@ -28,15 +26,27 @@ import tecnocard.com.chiringuito.UI.Fragments.VentasFragment;
 public class MainActivity extends AppCompatActivity {
 
     private String TAG = MainActivity.class.getSimpleName();
-    private TextView m_textView = null;
-    private String m_strKey = "a98dfaaa612de680d5153dfa80b33283";
     private NxpNfcLib m_linInstance = null;
+    private static byte[] UID;
+
+    VentasFragment ventasFragment;
+    ProductosFragment productosFragment;
+    RecargasFragment recargasFragment;
+    SettingsFragment settingsFragment;
+    Fragment selectedFragment;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
+        settingsFragment = new SettingsFragment();
+        ventasFragment = new VentasFragment(settingsFragment);
+        productosFragment = new ProductosFragment();
+        recargasFragment = new RecargasFragment(settingsFragment);
+
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -47,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_containter, new VentasFragment()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_containter, ventasFragment).commit();
 
         intializeLibrary();
 
@@ -73,34 +83,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void cardLogic(final Intent intent) {
-        CardType cardType = m_linInstance.getCardType(intent);
-        Log.d(TAG, "Card type found: " + cardType.getTagName());
-        if( cardType == CardType.DESFireEV1) {
-            IDESFireEV1 objDESFireRFireEV1 = DESFireFactory.getInstance().getDESFire(m_linInstance.getCustomModules());
-            try {
-                objDESFireRFireEV1.getReader().connect();
-            }catch (Throwable throwable) {
-                throwable.printStackTrace();
-            }
-        }
+        Tag myTag =  intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+        UID = myTag.getId();
+        if(selectedFragment.equals(ventasFragment))
+            ventasFragment.dismissAlert();
+        else
+            recargasFragment.dismissAlert();
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
             menuItem -> {
-                Fragment selectedFragment = null;
 
                 switch (menuItem.getItemId()){
                     case R.id.nav_ventas:
-                        selectedFragment = new VentasFragment();
+                        selectedFragment = ventasFragment;
                         break;
                     case R.id.nav_products:
-                        selectedFragment = new ProductosFragment();
+                        selectedFragment = productosFragment;
                         break;
                     case R.id.nav_recargas:
-                        selectedFragment = new RecargasFragment();
+                        selectedFragment = recargasFragment;
                         break;
                     case R.id.nav_settings:
-                        selectedFragment = new SettingsFragment();
+                        selectedFragment = settingsFragment;
                         break;
                 }
 
@@ -115,7 +120,16 @@ public class MainActivity extends AppCompatActivity {
 
     private void intializeLibrary() {
         m_linInstance = NxpNfcLib.getInstance();
+        String m_strKey = "a98dfaaa612de680d5153dfa80b33283";
         m_linInstance.registerActivity(this, m_strKey);
+    }
+
+    public static String getUID(){
+        if(UID != null) {
+            Utilities utils = new Utilities();
+            return utils.bytesToString(UID).replace("0x", "");
+        }
+        return "1";
     }
 
 }

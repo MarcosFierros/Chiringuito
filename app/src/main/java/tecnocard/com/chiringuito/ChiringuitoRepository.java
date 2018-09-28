@@ -34,7 +34,7 @@ public class ChiringuitoRepository {
         new deleteProductAsyncTask(mProductDao).execute(producto);
     }
 
-    public void update (Producto producto) {
+    void update(Producto producto) {
         new updateProductAsyncTask(mProductDao).execute(producto);
     }
 
@@ -89,7 +89,6 @@ public class ChiringuitoRepository {
     }
 
     public void insert (Usuario usuario) {
-        System.out.println("Entro al aegundo insert de repository");
         new insertUsuarioAsyncTask(mUserDao).execute(usuario);
     }
 
@@ -97,13 +96,18 @@ public class ChiringuitoRepository {
         new deleteUsuarioAsyncTask(mUserDao).execute(usuario);
     }
 
-    public void update (Usuario usuario) {
+    void update(Usuario usuario) {
         new updateUsuarioAsyncTask(mUserDao).execute(usuario);
     }
 
-    public Usuario get (Integer id) throws ExecutionException, InterruptedException {
-        return new getUsuarioAsyncTask(mUserDao).execute(id).get();
+    public Usuario get (String uid) throws ExecutionException, InterruptedException {
+        return new getUsuarioAsyncTask(mUserDao).execute(uid).get();
     }
+
+    Integer exists(String uid) throws ExecutionException, InterruptedException {
+        return  new usuarioExistsAsyncTask(mUserDao).execute(uid).get();
+    }
+
     private static class insertUsuarioAsyncTask extends AsyncTask<Usuario, Void, Void> {
 
         private UserDao mAsyncTaskDao;
@@ -155,7 +159,7 @@ public class ChiringuitoRepository {
         }
     }
 
-    private static class getUsuarioAsyncTask extends AsyncTask<Integer, Usuario, Usuario> {
+    private static class getUsuarioAsyncTask extends AsyncTask<String, Usuario, Usuario> {
 
         private UserDao mAsyncTaskDao;
 
@@ -164,8 +168,23 @@ public class ChiringuitoRepository {
         }
 
         @Override
-        protected Usuario doInBackground(Integer... integers) {
-            return mAsyncTaskDao.getUser(integers[0]);
+        protected Usuario doInBackground(String... strings) {
+            return mAsyncTaskDao.getUser(strings[0]);
+        }
+
+    }
+
+    private static class usuarioExistsAsyncTask extends AsyncTask<String, Usuario, Integer> {
+
+        private UserDao mAsyncTaskDao;
+
+        usuarioExistsAsyncTask(UserDao dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected Integer doInBackground(String... strings) {
+            return mAsyncTaskDao.userExists(strings[0]);
         }
 
     }

@@ -31,6 +31,7 @@ import tecnocard.com.chiringuito.R;
 import tecnocard.com.chiringuito.RecyclerViewAdapters.AlertAdapter;
 import tecnocard.com.chiringuito.RecyclerViewAdapters.ImageAdapter;
 import tecnocard.com.chiringuito.RecyclerViewAdapters.ReciboAdapter;
+import tecnocard.com.chiringuito.UI.MainActivity;
 import tecnocard.com.chiringuito.UserViewModel;
 import tecnocard.com.chiringuito.Usuario;
 
@@ -44,9 +45,23 @@ public class VentasFragment extends Fragment {
     private List<Producto> finalList;
     private List<Producto> productoList;
 
+    private SettingsFragment settingsFragment;
+
+    AlertDialog alertDialog;
     UserViewModel mUserViewModel;
     private Usuario usuario;
     View view;
+
+    public VentasFragment() {
+        this.alertDialog = null;
+        this.settingsFragment = null;
+    }
+
+    @SuppressLint("ValidFragment")
+    public VentasFragment(SettingsFragment settingsFragment) {
+        alertDialog = null;
+        this.settingsFragment = settingsFragment;
+    }
 
     @SuppressLint("SetTextI18n")
     @Nullable
@@ -60,11 +75,6 @@ public class VentasFragment extends Fragment {
 
         mUserViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
         usuario = null;
-        try {
-            usuario = mUserViewModel.get(getUid());
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
 
         final TextView totalValueTextView = view.findViewById(R.id.totalValueTxtView);
         RecyclerView recyclerView = view.findViewById(R.id.imageRecyclerView);
@@ -140,8 +150,25 @@ public class VentasFragment extends Fragment {
                 }
             });
 
-            alertDialog.show();  //<-- See This!
+            alertDialog.show();
         });
+
+        if (settingsFragment.isNFCOn()) {
+
+            final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+
+            LayoutInflater inflater1 = LayoutInflater.from(view.getContext());
+            @SuppressLint("InflateParams") View alertView = inflater1.inflate(R.layout.ventas_alert_wait, null);
+            builder.setView(alertView);
+            alertDialog = builder.create();
+            alertDialog.show();
+        } else {
+            try {
+                usuario = mUserViewModel.get("1");
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
 
         return view;
     }
@@ -171,9 +198,21 @@ public class VentasFragment extends Fragment {
         return collapsedList;
     }
 
-    static Integer getUid(){
-//        Cambiar esto cuando tengamos lo de nfc
-        return 1;
+
+    public void dismissAlert(){
+        try {
+            String uid = MainActivity.getUID();
+            if(mUserViewModel.userExists(uid))
+                usuario = mUserViewModel.get(uid);
+            else{
+                usuario = new Usuario( uid, 0);
+                mUserViewModel.insert(usuario);
+            }
+            if(alertDialog != null)
+                alertDialog.dismiss();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 

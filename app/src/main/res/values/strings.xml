@@ -52,5 +52,7 @@
     <string name="descripcion">Descripcion</string>
     <string name="hola_tarola">HOLA TAROLA</string>
     <string name="lista_productos">Lista de Productos</string>
+    <string name="conecte_tarjeta">Favor de conectar tarjeta</string>
+    <string name="nfc">NFC</string>
 
 </resources>
