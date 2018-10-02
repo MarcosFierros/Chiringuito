@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.ArrayDeque;
 import java.util.concurrent.ExecutionException;
 
 import tecnocard.com.chiringuito.R;
@@ -22,11 +23,14 @@ import tecnocard.com.chiringuito.Usuario;
 
 public class RecargasFragment extends Fragment {
 
+    double total, saldo, recarga = 0;
+    ArrayDeque<Double> valuesList = new ArrayDeque<>();
     private UserViewModel mUserViewModel;
     private Usuario usuario;
 
     TextView uidTextView;
-    TextView saldoTextView;
+    TextView saldoTextView, totalValueTextView,
+            recargaValueTextView, saldoValueTextView;
     AlertDialog alertDialog;
     View view;
 
@@ -65,13 +69,20 @@ public class RecargasFragment extends Fragment {
                 uidTextView = view.findViewById(R.id.uidTextView);
                 saldoTextView = view.findViewById(R.id.saldoTextView);
 
+                saldo = usuario.getSaldo();
                 uidTextView.setText(String.valueOf(usuario.getUid()));
-                saldoTextView.setText("$ " + String.valueOf(usuario.getSaldo()));
-
+                saldoTextView.setText("$ " + String.valueOf(saldo));
+                recarga = 0;
+                total = 0;
+                setTextViews(saldo, recarga, total);
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }
         }
+
+        totalValueTextView = view.findViewById(R.id.totalValueTxtView);
+        saldoValueTextView = view.findViewById(R.id.saldoTVValue);
+        recargaValueTextView = view.findViewById(R.id.recargaTVValue);
 
         Button btn10 = view.findViewById(R.id.Btn10);
         Button btn20 = view.findViewById(R.id.Btn20);
@@ -86,6 +97,25 @@ public class RecargasFragment extends Fragment {
         btn200.setOnClickListener(new BtnListener(200));
         btn500.setOnClickListener(new BtnListener(500));
 
+        Button okBtn = view.findViewById(R.id.okBtn);
+        Button backBtn = view.findViewById(R.id.backBtn);
+        okBtn.setOnClickListener(v -> {
+            usuario.setSaldo(total);
+            mUserViewModel.edit(usuario);
+            saldo = usuario.getSaldo();
+            saldoTextView.setText("$ " + String.valueOf(saldo));
+            total = saldo;
+            recarga = 0;
+            setTextViews(saldo, recarga, total);
+            valuesList.clear();
+        });
+        backBtn.setOnClickListener( v -> {
+            if(!valuesList.isEmpty()) {
+                recarga -= valuesList.removeLast();
+                total = saldo + recarga;
+                setTextViews(saldo, recarga, total);
+            }
+        });
         return view;
     }
 
@@ -113,7 +143,6 @@ public class RecargasFragment extends Fragment {
         }
     }
 
-
     class BtnListener implements View.OnClickListener {
 
         double value;
@@ -123,11 +152,24 @@ public class RecargasFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            usuario.setSaldo(usuario.getSaldo() + value);
-            mUserViewModel.edit(usuario);
-            String placeHolder = "$ " + String.valueOf(usuario.getSaldo());
-            saldoTextView.setText(placeHolder);
+            saldo = usuario.getSaldo();
+            recarga += value;
+            total = saldo + recarga;
+
+            setTextViews(saldo, recarga, total);
+            valuesList.offer(value);
+
         }
+    }
+
+
+    void setTextViews(double saldo, double recarga, double total) {
+        String placeHolder = "$ " + String.valueOf(saldo);
+        saldoValueTextView.setText(placeHolder);
+        placeHolder = "$ " + String.valueOf(recarga);
+        recargaValueTextView.setText(placeHolder);
+        placeHolder = "$ " + String.valueOf(total);
+        totalValueTextView.setText(placeHolder);
     }
 
 }

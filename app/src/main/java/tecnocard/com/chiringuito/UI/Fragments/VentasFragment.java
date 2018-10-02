@@ -136,6 +136,7 @@ public class VentasFragment extends Fragment {
                 usuario.setSaldo(newSaldo);
                 mUserViewModel.edit(usuario);
                 reciboAdapter.removeAll();
+                alertDialog.show();
             });
             builder.setNegativeButton("Cancel", (dialogInterface, i) -> {
 

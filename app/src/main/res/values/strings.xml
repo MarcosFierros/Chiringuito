@@ -54,5 +54,9 @@
     <string name="lista_productos">Lista de Productos</string>
     <string name="conecte_tarjeta">Favor de conectar tarjeta</string>
     <string name="nfc">NFC</string>
+    <string name="salxdo">Salxdo:</string>
+    <string name="recarga">Recarga:</string>
+    <string name="back">BACK</string>
+    <string name="ok">OK</string>
 
 </resources>
