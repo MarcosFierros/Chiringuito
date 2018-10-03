@@ -30,6 +30,7 @@ android {
 
             url "http://maven.taplinx.nxp.com/nexus/content/repositories/taplinx/"
         }
+
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -57,5 +58,9 @@ dependencies {
     annotationProcessor "android.arch.lifecycle:compiler:$rootProject.archLifecycleVersion"
 
     implementation ('taplinx-android:nxpnfcandroidlib:1.0@aar') { transitive = true }
+
+    // butter knife
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 
 }

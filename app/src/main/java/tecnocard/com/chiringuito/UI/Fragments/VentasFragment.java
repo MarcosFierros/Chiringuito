@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -13,10 +14,13 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +29,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import tecnocard.com.chiringuito.ProductViewModel;
 import tecnocard.com.chiringuito.Producto;
 import tecnocard.com.chiringuito.R;
@@ -52,6 +58,10 @@ public class VentasFragment extends Fragment {
     private Usuario usuario;
     View view;
 
+    BottomSheetBehavior sheetBehavior;
+    @BindView(R.id.test_layout)
+    LinearLayout layoutBottomSheet;
+
     public VentasFragment() {
         this.alertDialog = null;
         this.settingsFragment = null;
@@ -63,12 +73,41 @@ public class VentasFragment extends Fragment {
         this.settingsFragment = settingsFragment;
     }
 
-    @SuppressLint("SetTextI18n")
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.fragment_ventas, container, false);
+        view = inflater.inflate(R.layout.fragment_ventas_include, container, false);
+        layoutBottomSheet = view.findViewById(R.id.test_layout);
+
+        sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
+/*
+        sheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                switch (newState) {
+                    case BottomSheetBehavior.STATE_HIDDEN:
+                        break;
+                    case BottomSheetBehavior.STATE_EXPANDED: {
+                        btnBottomSheet.setText("Close Sheet");
+                    }
+                    break;
+                    case BottomSheetBehavior.STATE_COLLAPSED: {
+                        btnBottomSheet.setText("Expand Sheet");
+                    }
+                    break;
+                    case BottomSheetBehavior.STATE_DRAGGING:
+                        break;
+                    case BottomSheetBehavior.STATE_SETTLING:
+                        break;
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
+*/
 
         finalList = new ArrayList<>();
         productoList = new ArrayList<>();
@@ -105,8 +144,7 @@ public class VentasFragment extends Fragment {
         reciboRecyclerView.setLayoutManager(layoutManager);
         reciboRecyclerView.setAdapter(reciboAdapter);
 
-
-        Button readyBtn = view.findViewById(R.id.readyBtn);
+        Button readyBtn = layoutBottomSheet.findViewById(R.id.readyBtn);
         readyBtn.setOnClickListener(view -> {
 
             final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
@@ -119,11 +157,14 @@ public class VentasFragment extends Fragment {
             final double newSaldo = saldo-total;
 
             TextView totalAlertTxtView = alertView.findViewById(R.id.alertTotalValueTV);
-            totalAlertTxtView.setText("$ " + String.valueOf(total));
+            String placeholder = "$ " + String.valueOf(total);
+            totalAlertTxtView.setText(placeholder);
             TextView saldoAlertTxtView = alertView.findViewById(R.id.alertSaldoValueTV);
-            saldoAlertTxtView.setText("$ " + String.valueOf(saldo));
-            final TextView newSaldoAlertTxtView = alertView.findViewById(R.id.alertNewSaldoValueTV);
-            newSaldoAlertTxtView.setText("$ " + String.valueOf(newSaldo));
+            placeholder = "$ " + String.valueOf(saldo);
+            saldoAlertTxtView.setText(placeholder);
+            TextView newSaldoAlertTxtView = alertView.findViewById(R.id.alertNewSaldoValueTV);
+            placeholder = "$ " + String.valueOf(newSaldo);
+            newSaldoAlertTxtView.setText(placeholder);
 
             RecyclerView alertRecyclerView = alertView.findViewById(R.id.alertRv);
             layoutManager = new LinearLayoutManager(view.getContext());
@@ -171,8 +212,11 @@ public class VentasFragment extends Fragment {
             }
         }
 
+
+
         return view;
     }
+
 
     public List<Producto> Collapse(){
 
