@@ -130,9 +130,13 @@ public class ProductosFragment extends Fragment implements RecyclerItemTouchHelp
             LayoutInflater inflater = LayoutInflater.from(view.getContext());
             @SuppressLint("InflateParams") final View alertView = inflater.inflate(R.layout.productos_alert_layout, null);
             builder.setView(alertView);
+            EditText newName = alertView.findViewById(R.id.newNameEdit);
+            EditText newPrice = alertView.findViewById(R.id.newPriceEdit);
+            newName.setText(adapter.getProducto(index).getNombre());
+            String placeholder = "" + adapter.getProducto(index).getPrecio();
+            newPrice.setText(placeholder);
             builder.setPositiveButton("Ok", (dialogInterface, i) -> {
-                EditText newName = alertView.findViewById(R.id.newNameEdit);
-                EditText newPrice = alertView.findViewById(R.id.newPriceEdit);
+
                 String name2 = newName.getText().toString();
                 String priceString = newPrice.getText().toString();
                 if(!name2.matches("") && !priceString.matches(""))

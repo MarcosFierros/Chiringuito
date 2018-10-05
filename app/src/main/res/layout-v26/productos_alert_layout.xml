@@ -32,8 +32,7 @@
         android:hint="@string/nombre"
         android:inputType="textPersonName"
         android:selectAllOnFocus="true"
-        android:autofillHints="Nombre"
-        tools:targetApi="o" />
+        android:autofillHints="Nombre" />
 
     <EditText
         android:id="@+id/newPriceEdit"
@@ -45,8 +44,7 @@
         android:hint="@string/precio1"
         android:inputType="numberDecimal"
         android:selectAllOnFocus="true"
-        android:autofillHints="Precio"
-        tools:targetApi="o" />
+        android:autofillHints="Precio" />
 
 
 </LinearLayout>

@@ -133,5 +133,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         mProductViewModel.insert(producto);
     }
 
+    public Producto getProducto(int position) {
+        return list.get(position);
+    }
+
 
 }
