@@ -1,8 +1,9 @@
 package tecnocard.com.chiringuito.RecyclerViewAdapters;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,9 +11,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import tecnocard.com.chiringuito.Producto;
@@ -20,32 +18,33 @@ import tecnocard.com.chiringuito.R;
 
 public class ReciboAdapter extends RecyclerView.Adapter<ReciboAdapter.MyViewHolder> {
 
-    private static List<Producto> compraList;
-    private static List<Producto> productsList;
-    @SuppressLint("StaticFieldLeak")
-    private static TextView totalValueTextView;
+    private List<Producto> compraList;
+    private TextView totalValueTextView;
+    private TextView saldoRTextView;
+    private View view;
+    private double saldo;
 
-    public ReciboAdapter(List<Producto> compraList, List<Producto> productsList,TextView totalValueTextView){
-        ReciboAdapter.compraList = compraList;
-        ReciboAdapter.productsList = productsList;
-        ReciboAdapter.totalValueTextView = totalValueTextView;
+    public ReciboAdapter(List<Producto> compraList ,TextView totalValueTextView, TextView saldoRTextView, double saldo){
+        this.compraList = compraList;
+        this.totalValueTextView = totalValueTextView;
+        this.saldoRTextView = saldoRTextView;
+        this.saldo = saldo;
     }
 
-    @NonNull
     @Override
-    public ReciboAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ReciboAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recibo_layout, parent, false);
+        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recibo_layout, parent, false);
 
         return new MyViewHolder(view, parent.getContext());
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ReciboAdapter.MyViewHolder holder, int position) {
 
         holder.name.setText(compraList.get(position).getNombre());
-        holder.precio.setText("$" + compraList.get(position).getPrecio());
+        String placeholder = "$" + compraList.get(position).getPrecio();
+        holder.precio.setText(placeholder);
 
     }
 
@@ -70,28 +69,33 @@ public class ReciboAdapter extends RecyclerView.Adapter<ReciboAdapter.MyViewHold
 
             this.context = context;
 
-            delete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    removeAt(getAdapterPosition());
-                }
-            });
-
-
+            delete.setOnClickListener(view -> removeAt(getAdapterPosition()));
         }
     }
 
-    @SuppressLint("SetTextI18n")
     private void removeAt(int position) {
         double oldTotal = Double.parseDouble(totalValueTextView.getText().toString().replace("$", ""));
         double newTotal = oldTotal - compraList.get(position).getPrecio();
-        totalValueTextView.setText("$ " + newTotal);
+        double newSaldo = saldo - newTotal;
+
+        String placeholder = "$ " + newTotal;
+        totalValueTextView.setText(placeholder);
+        placeholder = "$ " + newSaldo;
+        saldoRTextView.setText(placeholder);
+        if(newSaldo < 0)
+            saldoRTextView.setTextColor(Color.RED);
+        else
+            saldoRTextView.setTextColor(ContextCompat.getColor(view.getContext(), R.color.cardview_dark_background));
+
         compraList.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, compraList.size());
     }
 
-    @SuppressLint("SetTextI18n")
+    public void setSaldo(double saldo) {
+        this.saldo = saldo;
+    }
+
     public void removeAll(){
         final int size = compraList.size();
         if (size > 0) {
@@ -100,9 +104,8 @@ public class ReciboAdapter extends RecyclerView.Adapter<ReciboAdapter.MyViewHold
             }
             notifyItemRangeRemoved(0, size);
         }
-        totalValueTextView.setText("$ 0.00");
+        String placeholder = "$ 0.00";
+        totalValueTextView.setText(placeholder);
     }
-
-
 
 }

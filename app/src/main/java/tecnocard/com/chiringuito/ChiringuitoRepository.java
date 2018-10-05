@@ -154,7 +154,7 @@ public class ChiringuitoRepository {
 
         @Override
         protected Void doInBackground(final Usuario... usuarios) {
-            mAsyncTaskDao.updateUser(usuarios[0]);
+            mAsyncTaskDao.updateUser(usuarios[0].getSaldo(), usuarios[0].getUid());
             return null;
         }
     }

@@ -30,8 +30,8 @@ public interface UserDao {
     @Delete
     void deleteUser(Usuario usuario);
 
-    @Update
-    void updateUser(Usuario usuario);
+    @Query("UPDATE user_table SET user_saldo=:saldo WHERE user_uid = :uid")
+    void updateUser(double saldo, String uid);
 
     @Query("SELECT COUNT(*) FROM user_table WHERE user_uid == :id")
     int userExists(String id);

@@ -1,8 +1,9 @@
 package tecnocard.com.chiringuito.RecyclerViewAdapters;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,8 +11,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import tecnocard.com.chiringuito.Producto;
@@ -19,17 +18,20 @@ import tecnocard.com.chiringuito.R;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.imageViewHolder> {
 
-    private static List<Producto> productlist;
-    private static List<Producto> finalList;
-    @SuppressLint("StaticFieldLeak")
-    private static ReciboAdapter reciboAdapter;
+    private List<Producto> productlist;
+    private List<Producto> finalList;
+    private ReciboAdapter reciboAdapter;
     private TextView totalValueTextView;
+    private TextView saldoRValueTextView;
+    private double saldo;
 
-    public ImageAdapter(List<Producto> productlist, List<Producto> finalList, ReciboAdapter reciboAdapter, TextView totalValueTextView){
-        ImageAdapter.productlist = productlist;
-        ImageAdapter.finalList = finalList;
-        ImageAdapter.reciboAdapter = reciboAdapter;
+    public ImageAdapter(List<Producto> productlist, List<Producto> finalList, ReciboAdapter reciboAdapter, TextView totalValueTextView, TextView saldoRValueTextView, double saldo){
+        this.productlist = productlist;
+        this.finalList = finalList;
+        this.reciboAdapter = reciboAdapter;
         this.totalValueTextView = totalValueTextView;
+        this.saldoRValueTextView = saldoRValueTextView;
+        this.saldo = saldo;
     }
 
     @NonNull
@@ -40,12 +42,12 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.imageViewHol
         return new imageViewHolder(view, parent.getContext());
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ImageAdapter.imageViewHolder holder, int position) {
 
         holder.name.setText(productlist.get(position).getNombre());
-        holder.precio.setText("$" + productlist.get(position).getPrecio());
+        String placeholder = "$" + productlist.get(position).getPrecio();
+        holder.precio.setText(placeholder);
         holder.image.setImageResource(productlist.get(position).getImageSrc());
     }
 
@@ -68,21 +70,28 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.imageViewHol
             image = itemView.findViewById(R.id.imageProductoTV);
             this.context = context;
 
-            image.setOnClickListener(new View.OnClickListener() {
-                @SuppressLint("SetTextI18n")
-                @Override
-                public void onClick(View view) {
-                    Producto producto = productlist.get(getAdapterPosition());
-                    finalList.add(producto);
-                    reciboAdapter.notifyDataSetChanged();
-                    double oldTotal = Double.parseDouble(totalValueTextView.getText().toString().replace("$", ""));
-                    double newTotal = oldTotal + producto.getPrecio();
-                    totalValueTextView.setText("$ " + newTotal);
-                }
+            image.setOnClickListener(view -> {
+                Producto producto = productlist.get(getAdapterPosition());
+                finalList.add(producto);
+                reciboAdapter.notifyDataSetChanged();
+
+                double oldTotal = Double.parseDouble(totalValueTextView.getText().toString().replace("$", ""));
+                double newTotal = oldTotal + producto.getPrecio();
+
+                String placeholder = "$ " + newTotal;
+                totalValueTextView.setText(placeholder);
+                placeholder = "$ " + (saldo - newTotal);
+                saldoRValueTextView.setText(placeholder);
+                if(saldo - newTotal < 0)
+                    saldoRValueTextView.setTextColor(Color.RED);
+                else
+                    saldoRValueTextView.setTextColor(ContextCompat.getColor(view.getContext(), R.color.cardview_dark_background));
             });
-
         }
+    }
 
+    public void setSaldo(double saldo) {
+        this.saldo = saldo;
     }
 
     public void setProducts(List<Producto> productos){

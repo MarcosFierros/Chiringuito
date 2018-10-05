@@ -1,6 +1,7 @@
 <component name="ProjectDictionaryState">
   <dictionary name="Marco">
     <words>
+      <w>adaptadores</w>
       <w>chiringuito</w>
       <w>cobro</w>
       <w>compra</w>
@@ -9,7 +10,9 @@
       <w>eliminado</w>
       <w>hacer</w>
       <w>imagen</w>
+      <w>insuficiente</w>
       <w>intialize</w>
+      <w>listas</w>
       <w>nombre</w>
       <w>precio</w>
       <w>productlist</w>
@@ -17,6 +20,7 @@
       <w>productos</w>
       <w>recargas</w>
       <w>recibo</w>
+      <w>saldo</w>
       <w>usuario</w>
       <w>ventas</w>
     </words>

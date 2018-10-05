@@ -42,10 +42,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         settingsFragment = new SettingsFragment();
-        ventasFragment = new VentasFragment(settingsFragment);
+        ventasFragment = VentasFragment.newInstance(settingsFragment.isNFCOn());
         productosFragment = new ProductosFragment();
         recargasFragment = new RecargasFragment(settingsFragment);
-
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -96,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (menuItem.getItemId()){
                     case R.id.nav_ventas:
+                        ventasFragment.setSettingsNFC(settingsFragment.isNFCOn());
                         selectedFragment = ventasFragment;
                         break;
                     case R.id.nav_products:

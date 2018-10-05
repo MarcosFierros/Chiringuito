@@ -1,11 +1,10 @@
 package tecnocard.com.chiringuito.UI.Fragments;
 
-import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.drawable.Animatable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -14,13 +13,12 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,8 +27,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import tecnocard.com.chiringuito.ProductViewModel;
 import tecnocard.com.chiringuito.Producto;
 import tecnocard.com.chiringuito.R;
@@ -43,91 +39,67 @@ import tecnocard.com.chiringuito.Usuario;
 
 public class VentasFragment extends Fragment {
 
-    private RecyclerView.LayoutManager layoutManager;
-    private AlertAdapter alertAdapter;
-    private ImageAdapter imageAdapter;
-    private ReciboAdapter reciboAdapter;
-
-    private List<Producto> finalList;
-    private List<Producto> productoList;
-
-    private SettingsFragment settingsFragment;
-
-    AlertDialog alertDialog;
-    UserViewModel mUserViewModel;
-    private Usuario usuario;
+//  Variables de UI
     View view;
-
     BottomSheetBehavior sheetBehavior;
-    @BindView(R.id.test_layout)
     LinearLayout layoutBottomSheet;
+    AlertDialog alertDialog;
 
-    public VentasFragment() {
-        this.alertDialog = null;
-        this.settingsFragment = null;
-    }
+//  Adaptadores de recyclerView
+    RecyclerView.LayoutManager layoutManager;
+    AlertAdapter alertAdapter;
+    ImageAdapter imageAdapter;
+    ReciboAdapter reciboAdapter;
 
-    @SuppressLint("ValidFragment")
-    public VentasFragment(SettingsFragment settingsFragment) {
-        alertDialog = null;
-        this.settingsFragment = settingsFragment;
-    }
+//  Listas de recyclerView
+    List<Producto> finalList;
+    List<Producto> productoList;
+
+//  Variables Room
+    UserViewModel mUserViewModel;
+    Usuario usuario;
+
+//  Arguments
+    boolean settingsNFC;
+    double saldo;
+    double total;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_ventas_include, container, false);
+        mUserViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
+        readBundle(getArguments());
+
         layoutBottomSheet = view.findViewById(R.id.test_layout);
-
         sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
-/*
-        sheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                switch (newState) {
-                    case BottomSheetBehavior.STATE_HIDDEN:
-                        break;
-                    case BottomSheetBehavior.STATE_EXPANDED: {
-                        btnBottomSheet.setText("Close Sheet");
-                    }
-                    break;
-                    case BottomSheetBehavior.STATE_COLLAPSED: {
-                        btnBottomSheet.setText("Expand Sheet");
-                    }
-                    break;
-                    case BottomSheetBehavior.STATE_DRAGGING:
-                        break;
-                    case BottomSheetBehavior.STATE_SETTLING:
-                        break;
-                }
-            }
 
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
-            }
-        });
-*/
+        TextView totalValueTextView = view.findViewById(R.id.totalValueTxtView);
+        TextView saldoValueTextView = view.findViewById(R.id.saldoValueTxtView);
+        TextView saldoRValueTextView = view.findViewById(R.id.saldoRValueTxtView);
+        RecyclerView recyclerView = view.findViewById(R.id.imageRecyclerView);
+        RecyclerView reciboRecyclerView = view.findViewById(R.id.finalListRecyclerView);
+        Button readyBtn = layoutBottomSheet.findViewById(R.id.readyBtn);
 
         finalList = new ArrayList<>();
         productoList = new ArrayList<>();
+        reciboAdapter = new ReciboAdapter(finalList, totalValueTextView, saldoRValueTextView, saldo);
+        imageAdapter = new ImageAdapter(productoList, finalList, reciboAdapter, totalValueTextView, saldoRValueTextView, saldo);
+        showAlert(saldoValueTextView, saldoRValueTextView);
 
-        mUserViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
-        usuario = null;
-
-        final TextView totalValueTextView = view.findViewById(R.id.totalValueTxtView);
-        RecyclerView recyclerView = view.findViewById(R.id.imageRecyclerView);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.addItemDecoration(
-                new DividerItemDecoration(view.getContext(), DividerItemDecoration.HORIZONTAL));
-        recyclerView.addItemDecoration(
-                new DividerItemDecoration(view.getContext(), DividerItemDecoration.VERTICAL));
         layoutManager = new GridLayoutManager(view.getContext(), 4);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.addItemDecoration( new DividerItemDecoration(view.getContext(), DividerItemDecoration.HORIZONTAL));
+        recyclerView.addItemDecoration( new DividerItemDecoration(view.getContext(), DividerItemDecoration.VERTICAL));
         recyclerView.setLayoutManager(layoutManager);
-
-        reciboAdapter = new ReciboAdapter(finalList, productoList, totalValueTextView);
-        imageAdapter = new ImageAdapter(productoList, finalList, reciboAdapter, totalValueTextView);
         recyclerView.setAdapter(imageAdapter);
+
+        layoutManager = new LinearLayoutManager(view.getContext());
+        reciboRecyclerView.setHasFixedSize(true);
+        reciboRecyclerView.addItemDecoration( new DividerItemDecoration(view.getContext(), DividerItemDecoration.HORIZONTAL));
+        reciboRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        reciboRecyclerView.setLayoutManager(layoutManager);
+        reciboRecyclerView.swapAdapter(reciboAdapter, true);
 
         ProductViewModel productViewModel = ViewModelProviders.of(this).get(ProductViewModel.class);
         productViewModel.getAllProducts().observe(this, productos -> {
@@ -135,26 +107,13 @@ public class VentasFragment extends Fragment {
             imageAdapter.setProducts(productos);
         });
 
-        RecyclerView reciboRecyclerView = view.findViewById(R.id.finalListRecyclerView);
-        reciboRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        reciboRecyclerView.setHasFixedSize(true);
-        reciboRecyclerView.addItemDecoration(
-                new DividerItemDecoration(view.getContext(), DividerItemDecoration.HORIZONTAL));
-        layoutManager = new LinearLayoutManager(view.getContext());
-        reciboRecyclerView.setLayoutManager(layoutManager);
-        reciboRecyclerView.setAdapter(reciboAdapter);
-
-        Button readyBtn = layoutBottomSheet.findViewById(R.id.readyBtn);
         readyBtn.setOnClickListener(view -> {
 
-            final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+            AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+            View alertView = View.inflate(getContext() ,R.layout.alert_layout, null);
 
-            LayoutInflater inflater1 = LayoutInflater.from(view.getContext());
-            @SuppressLint("InflateParams") View alertView = inflater1.inflate(R.layout.alert_layout, null);
-
-            double saldo = usuario.getSaldo();
-            double total = Double.parseDouble(totalValueTextView.getText().toString().replace("$", ""));
-            final double newSaldo = saldo-total;
+            total = Double.parseDouble(totalValueTextView.getText().toString().replace("$", ""));
+            double newSaldo = saldo-total;
 
             TextView totalAlertTxtView = alertView.findViewById(R.id.alertTotalValueTV);
             String placeholder = "$ " + String.valueOf(total);
@@ -174,15 +133,24 @@ public class VentasFragment extends Fragment {
 
             builder.setView(alertView);
             builder.setPositiveButton("Ok", (dialogInterface, i) -> {
-                usuario.setSaldo(newSaldo);
+                usuario.setSaldo(saldo-total);
                 mUserViewModel.edit(usuario);
                 reciboAdapter.removeAll();
-                alertDialog.show();
-            });
-            builder.setNegativeButton("Cancel", (dialogInterface, i) -> {
 
+                AlertDialog.Builder builder1 = new AlertDialog.Builder(view.getContext());
+                View alertView1 = View.inflate(getContext(), R.layout.confirm_layout, null);
+                TextView newSaldoValueTextView = alertView1.findViewById(R.id.newSaldoValueTextView);
+                String placeholder1 = "$ " + usuario.getSaldo();
+                newSaldoValueTextView.setText(placeholder1);
+
+                builder1.setPositiveButton("Ok", (dialog, which) -> showAlert(saldoValueTextView, saldoRValueTextView));
+                builder1.setView(alertView1);
+                AlertDialog alertDialog1 = builder1.create();
+                alertDialog1.show();
             });
-            final AlertDialog alertDialog = builder.create();
+            builder.setNegativeButton("Cancelar", null);
+            AlertDialog alertDialog = builder.create();
+
             alertDialog.setOnShowListener(dialog -> {
                 if(newSaldo < 0) {
                     newSaldoAlertTxtView.setTextColor(Color.RED);
@@ -195,28 +163,19 @@ public class VentasFragment extends Fragment {
             alertDialog.show();
         });
 
-        if (settingsFragment.isNFCOn()) {
-
-            final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-
-            LayoutInflater inflater1 = LayoutInflater.from(view.getContext());
-            @SuppressLint("InflateParams") View alertView = inflater1.inflate(R.layout.ventas_alert_wait, null);
-            builder.setView(alertView);
-            alertDialog = builder.create();
-            alertDialog.show();
-        } else {
-            try {
-                usuario = mUserViewModel.get("1");
-            } catch (ExecutionException | InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-
-
         return view;
     }
 
+    public static VentasFragment newInstance(boolean settingsNFC) {
+
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("settingsNFC", settingsNFC);
+
+        VentasFragment fragment = new VentasFragment();
+        fragment.setArguments(bundle);
+
+        return fragment;
+    }
 
     public List<Producto> Collapse(){
 
@@ -243,6 +202,9 @@ public class VentasFragment extends Fragment {
         return collapsedList;
     }
 
+    public void setSettingsNFC(boolean settingsNFC) {
+        this.settingsNFC = settingsNFC;
+    }
 
     public void dismissAlert(){
         try {
@@ -260,5 +222,38 @@ public class VentasFragment extends Fragment {
         }
     }
 
+    void readBundle(Bundle bundle) {
+        if (bundle != null)
+            settingsNFC = bundle.getBoolean("settingsNFC");
+    }
+
+    void showAlert(TextView saldoValueTextView, TextView saldoRValueTextView) {
+        saldo = 0;
+        total = 0;
+        if (settingsNFC) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+            View alertView = View.inflate(getContext(), R.layout.ventas_alert_wait, null);
+            builder.setView(alertView);
+            alertDialog = builder.create();
+            alertDialog.show();
+
+        } else {
+
+            try {
+                usuario = mUserViewModel.get("1");
+                saldo = usuario.getSaldo();
+                total = saldo;
+                reciboAdapter.setSaldo(saldo);
+                imageAdapter.setSaldo(saldo);
+                String placeHolder = "$ " + saldo;
+                saldoValueTextView.setText(placeHolder);
+                placeHolder = "$ " + total;
+                saldoRValueTextView.setText(placeHolder);
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
 }

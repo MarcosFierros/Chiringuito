@@ -34,7 +34,6 @@
     <string name="precio1">Precio</string>
     <string name="uid">Uid:</string>
     <string name="_00000">00000</string>
-    <string name="saldo">Saldo:</string>
     <string name="selecciona_cantidad_a_agregar">Selecciona cantidad a agregar:</string>
     <string name="_10">$10</string>
     <string name="_50">$50</string>
@@ -58,5 +57,8 @@
     <string name="recarga">Recarga:</string>
     <string name="back">BACK</string>
     <string name="ok">OK</string>
+    <string name="tu_saldo_restante_es_de">Tu saldo restante es de:</string>
+    <string name="saldo_restante">Saldo restante:</string>
+    <string name="saldo">saldo</string>
 
 </resources>
