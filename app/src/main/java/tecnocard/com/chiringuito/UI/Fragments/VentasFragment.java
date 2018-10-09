@@ -13,6 +13,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +45,9 @@ public class VentasFragment extends Fragment {
     BottomSheetBehavior sheetBehavior;
     LinearLayout layoutBottomSheet;
     AlertDialog alertDialog;
+    TextView totalValueTextView;
+    TextView saldoValueTextView;
+    TextView saldoRValueTextView;
 
 //  Adaptadores de recyclerView
     RecyclerView.LayoutManager layoutManager;
@@ -61,6 +65,7 @@ public class VentasFragment extends Fragment {
 
 //  Arguments
     boolean settingsNFC;
+    boolean isReading;
     double saldo;
     double total;
 
@@ -74,9 +79,9 @@ public class VentasFragment extends Fragment {
         layoutBottomSheet = view.findViewById(R.id.test_layout);
         sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
 
-        TextView totalValueTextView = view.findViewById(R.id.totalValueTxtView);
-        TextView saldoValueTextView = view.findViewById(R.id.saldoValueTxtView);
-        TextView saldoRValueTextView = view.findViewById(R.id.saldoRValueTxtView);
+        totalValueTextView = view.findViewById(R.id.totalValueTxtView);
+        saldoValueTextView = view.findViewById(R.id.saldoValueTxtView);
+        saldoRValueTextView = view.findViewById(R.id.saldoRValueTxtView);
         RecyclerView recyclerView = view.findViewById(R.id.imageRecyclerView);
         RecyclerView reciboRecyclerView = view.findViewById(R.id.finalListRecyclerView);
         Button readyBtn = layoutBottomSheet.findViewById(R.id.readyBtn);
@@ -142,6 +147,10 @@ public class VentasFragment extends Fragment {
                 TextView newSaldoValueTextView = alertView1.findViewById(R.id.newSaldoValueTextView);
                 String placeholder1 = "$ " + usuario.getSaldo();
                 newSaldoValueTextView.setText(placeholder1);
+                placeholder1 = "$ 0.00";
+                totalValueTextView.setText(placeholder1);
+                saldoValueTextView.setText(placeholder1);
+                saldoRValueTextView.setText(placeholder1);
 
                 builder1.setPositiveButton("Ok", (dialog, which) -> showAlert(saldoValueTextView, saldoRValueTextView));
                 builder1.setView(alertView1);
@@ -164,6 +173,7 @@ public class VentasFragment extends Fragment {
         });
 
         return view;
+
     }
 
     public static VentasFragment newInstance(boolean settingsNFC) {
@@ -215,6 +225,20 @@ public class VentasFragment extends Fragment {
                 usuario = new Usuario( uid, 0);
                 mUserViewModel.insert(usuario);
             }
+            Log.i("Ventas Fragment", "SALDO USUARIO: " + usuario.getSaldo());
+
+            total = 0;
+            saldo = usuario.getSaldo();
+            String placeholder = "$ "  + total;
+            totalValueTextView.setText(placeholder);
+            placeholder = "$ " + saldo;
+            saldoValueTextView.setText(placeholder);
+            placeholder = "$ " + saldo;
+            saldoRValueTextView.setText(placeholder);
+            imageAdapter.setSaldo(saldo);
+            reciboAdapter.setSaldo(saldo);
+            isReading = false;
+
             if(alertDialog != null)
                 alertDialog.dismiss();
         } catch (ExecutionException | InterruptedException e) {
@@ -237,7 +261,7 @@ public class VentasFragment extends Fragment {
             builder.setView(alertView);
             alertDialog = builder.create();
             alertDialog.show();
-
+            isReading = true;
         } else {
 
             try {
@@ -250,10 +274,14 @@ public class VentasFragment extends Fragment {
                 saldoValueTextView.setText(placeHolder);
                 placeHolder = "$ " + total;
                 saldoRValueTextView.setText(placeHolder);
+
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
 
+    public boolean isReading() {
+        return isReading;
+    }
 }

@@ -52,6 +52,11 @@ public class RecargasFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_recargas, container, false);
 
         mUserViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
+
+        totalValueTextView = view.findViewById(R.id.totalValueTxtView);
+        saldoValueTextView = view.findViewById(R.id.saldoTVValue);
+        recargaValueTextView = view.findViewById(R.id.recargaTVValue);
+
         usuario = null;
         if (settingsFragment.isNFCOn()) {
 
@@ -65,7 +70,6 @@ public class RecargasFragment extends Fragment {
         } else {
             try {
                 usuario = mUserViewModel.get("1");
-
                 uidTextView = view.findViewById(R.id.uidTextView);
                 saldoTextView = view.findViewById(R.id.saldoTextView);
 
@@ -80,9 +84,6 @@ public class RecargasFragment extends Fragment {
             }
         }
 
-        totalValueTextView = view.findViewById(R.id.totalValueTxtView);
-        saldoValueTextView = view.findViewById(R.id.saldoTVValue);
-        recargaValueTextView = view.findViewById(R.id.recargaTVValue);
 
         Button btn10 = view.findViewById(R.id.Btn10);
         Button btn20 = view.findViewById(R.id.Btn20);
