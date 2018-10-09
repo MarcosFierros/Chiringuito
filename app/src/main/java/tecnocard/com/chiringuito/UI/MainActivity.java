@@ -15,7 +15,6 @@ import android.view.View;
 
 import com.nxp.nfclib.NxpNfcLib;
 import com.nxp.nfclib.defaultimpl.Utilities;
-import com.nxp.nfclib.interfaces.IUtility;
 
 import tecnocard.com.chiringuito.R;
 import tecnocard.com.chiringuito.UI.Fragments.ProductosFragment;
