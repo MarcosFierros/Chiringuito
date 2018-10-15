@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,22 +75,24 @@ public class ReciboAdapter extends RecyclerView.Adapter<ReciboAdapter.MyViewHold
     }
 
     private void removeAt(int position) {
-        double oldTotal = Double.parseDouble(totalValueTextView.getText().toString().replace("$", ""));
-        double newTotal = oldTotal - compraList.get(position).getPrecio();
-        double newSaldo = saldo - newTotal;
+        if(position >= 0) {
+            double oldTotal = Double.parseDouble(totalValueTextView.getText().toString().replace("$", ""));
+            double newTotal = oldTotal - compraList.get(position).getPrecio();
+            double newSaldo = saldo - newTotal;
 
-        String placeholder = "$ " + newTotal;
-        totalValueTextView.setText(placeholder);
-        placeholder = "$ " + newSaldo;
-        saldoRTextView.setText(placeholder);
-        if(newSaldo < 0)
-            saldoRTextView.setTextColor(Color.RED);
-        else
-            saldoRTextView.setTextColor(ContextCompat.getColor(view.getContext(), R.color.cardview_dark_background));
+            String placeholder = "$ " + newTotal;
+            totalValueTextView.setText(placeholder);
+            placeholder = "$ " + newSaldo;
+            saldoRTextView.setText(placeholder);
+            if(newSaldo < 0)
+                saldoRTextView.setTextColor(Color.RED);
+            else
+                saldoRTextView.setTextColor(ContextCompat.getColor(view.getContext(), R.color.cardview_dark_background));
 
-        compraList.remove(position);
-        notifyItemRemoved(position);
-        notifyItemRangeChanged(position, compraList.size());
+            compraList.remove(position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, compraList.size());
+        }
     }
 
     public void setSaldo(double saldo) {

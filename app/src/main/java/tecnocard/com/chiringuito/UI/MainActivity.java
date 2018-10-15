@@ -83,10 +83,12 @@ public class MainActivity extends AppCompatActivity {
     private void cardLogic(final Intent intent) {
         Tag myTag =  intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
         UID = myTag.getId();
-        if (selectedFragment.equals(ventasFragment) && ventasFragment.isReading())
-            ventasFragment.dismissAlert();
-        else
-            recargasFragment.dismissAlert();
+        if(ventasFragment != null && recargasFragment != null && selectedFragment != null ){
+            if (selectedFragment.equals(ventasFragment) && ventasFragment.isReading())
+                ventasFragment.dismissAlert();
+            else
+                recargasFragment.dismissAlert();
+        }
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =

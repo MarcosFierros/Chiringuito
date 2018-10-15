@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -123,6 +124,7 @@ public class RecargasFragment extends Fragment {
     public void dismissAlert(){
         try {
             String uid = MainActivity.getUID();
+            Log.e("Recargas", uid);
             if(mUserViewModel.userExists(uid))
                 usuario = mUserViewModel.get(uid);
             else{
@@ -153,12 +155,14 @@ public class RecargasFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            saldo = usuario.getSaldo();
-            recarga += value;
-            total = saldo + recarga;
+            if(usuario != null) {
+                saldo = usuario.getSaldo();
+                recarga += value;
+                total = saldo + recarga;
 
-            setTextViews(saldo, recarga, total);
-            valuesList.offer(value);
+                setTextViews(saldo, recarga, total);
+                valuesList.offer(value);
+            }
 
         }
     }

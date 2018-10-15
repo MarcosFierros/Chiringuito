@@ -89,7 +89,7 @@ public class ProductosFragment extends Fragment implements RecyclerItemTouchHelp
                 EditText newPrice = alertView.findViewById(R.id.newPriceEdit);
                 String name = newName.getText().toString();
                 String priceString = newPrice.getText().toString();
-                if(!name.matches("") || !priceString.matches("")){
+                if(!name.matches("") && !priceString.matches("")){
                     Producto newProduct = new Producto(name, Double.parseDouble(priceString));
                     adapter.add(view.getContext(), newProduct);
                 }
