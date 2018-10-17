@@ -5,8 +5,11 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,10 +33,14 @@ public class RecargasFragment extends Fragment {
     private Usuario usuario;
 
     TextView uidTextView;
-    TextView saldoTextView, totalValueTextView,
-            recargaValueTextView, saldoValueTextView;
+    TextView saldoTextView;
+    TextView recargaTextView;
+    TextView newSaldoTextView;
     AlertDialog alertDialog;
     View view;
+    ConstraintLayout layout;
+    ConstraintSet constraintSet1;
+    ConstraintSet constraintSet2;
 
     SettingsFragment settingsFragment;
 
@@ -51,12 +58,20 @@ public class RecargasFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_recargas, container, false);
+        layout = view.findViewById(R.id.layout);
+
+        constraintSet1  = new ConstraintSet();
+        constraintSet2 = new ConstraintSet();
+
+        constraintSet1.clone(layout);
+        constraintSet2.clone(view.getContext(), R.layout.fragment_recargas_2);
 
         mUserViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
 
-        totalValueTextView = view.findViewById(R.id.totalValueTxtView);
-        saldoValueTextView = view.findViewById(R.id.saldoTVValue);
-        recargaValueTextView = view.findViewById(R.id.recargaTVValue);
+        saldoTextView = view.findViewById(R.id.saldo_textview);
+        recargaTextView = view.findViewById(R.id.recarga_textview);
+        newSaldoTextView = view.findViewById(R.id.newsaldo_textview);
+
 
         usuario = null;
         if (settingsFragment.isNFCOn()) {
@@ -71,15 +86,15 @@ public class RecargasFragment extends Fragment {
         } else {
             try {
                 usuario = mUserViewModel.get("1");
+
                 uidTextView = view.findViewById(R.id.uidTextView);
-                saldoTextView = view.findViewById(R.id.saldoTextView);
 
                 saldo = usuario.getSaldo();
                 uidTextView.setText(String.valueOf(usuario.getUid()));
-                saldoTextView.setText("$ " + String.valueOf(saldo));
                 recarga = 0;
-                total = 0;
+                total = saldo;
                 setTextViews(saldo, recarga, total);
+
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }
@@ -101,15 +116,20 @@ public class RecargasFragment extends Fragment {
 
         Button okBtn = view.findViewById(R.id.okBtn);
         Button backBtn = view.findViewById(R.id.backBtn);
+        Button agregarBtn = view.findViewById(R.id.agregarBtn);
+
         okBtn.setOnClickListener(v -> {
             usuario.setSaldo(total);
             mUserViewModel.edit(usuario);
             saldo = usuario.getSaldo();
-            saldoTextView.setText("$ " + String.valueOf(saldo));
             total = saldo;
             recarga = 0;
             setTextViews(saldo, recarga, total);
             valuesList.clear();
+
+            TransitionManager.beginDelayedTransition(layout);
+            constraintSet1.applyTo(layout);
+
         });
         backBtn.setOnClickListener( v -> {
             if(!valuesList.isEmpty()) {
@@ -117,6 +137,10 @@ public class RecargasFragment extends Fragment {
                 total = saldo + recarga;
                 setTextViews(saldo, recarga, total);
             }
+        });
+        agregarBtn.setOnClickListener( v -> {
+            TransitionManager.beginDelayedTransition(layout);
+            constraintSet2.applyTo(layout);
         });
         return view;
     }
@@ -133,7 +157,7 @@ public class RecargasFragment extends Fragment {
             }
 
             uidTextView = view.findViewById(R.id.uidTextView);
-            saldoTextView = view.findViewById(R.id.saldoTextView);
+            saldoTextView = view.findViewById(R.id.recargaTVValue);
 
             uidTextView.setText(String.valueOf(usuario.getUid()));
             String placeholder = "$ " + String.valueOf(usuario.getSaldo());
@@ -170,11 +194,11 @@ public class RecargasFragment extends Fragment {
 
     void setTextViews(double saldo, double recarga, double total) {
         String placeHolder = "$ " + String.valueOf(saldo);
-        saldoValueTextView.setText(placeHolder);
+        saldoTextView.setText(placeHolder);
         placeHolder = "$ " + String.valueOf(recarga);
-        recargaValueTextView.setText(placeHolder);
+        recargaTextView.setText(placeHolder);
         placeHolder = "$ " + String.valueOf(total);
-        totalValueTextView.setText(placeHolder);
+        newSaldoTextView.setText(placeHolder);
     }
 
 }

@@ -32,7 +32,7 @@
     <string name="introduzca_datos_del_producto">Introduzca datos del producto:</string>
     <string name="nombre">Nombre</string>
     <string name="precio1">Precio</string>
-    <string name="uid">Uid:</string>
+    <string name="uid">UID:</string>
     <string name="_00000">00000</string>
     <string name="selecciona_cantidad_a_agregar">Selecciona cantidad a agregar:</string>
     <string name="_10">$10</string>
@@ -53,12 +53,14 @@
     <string name="lista_productos">Lista de Productos</string>
     <string name="conecte_tarjeta">Favor de conectar tarjeta</string>
     <string name="nfc">NFC</string>
-    <string name="salxdo">Salxdo:</string>
+    <string name="salxdo">Saldo:</string>
     <string name="recarga">Recarga:</string>
     <string name="back">BACK</string>
     <string name="ok">OK</string>
     <string name="tu_saldo_restante_es_de">Tu saldo restante es de:</string>
     <string name="saldo_restante">Saldo restante:</string>
-    <string name="saldo">saldo</string>
+    <string name="saldo">Saldo actual:</string>
+    <string name="agregar_saldo">Agregar saldo</string>
+    <string name="nuevo_saldo_nocaps">Nuevo saldo:</string>
 
 </resources>
