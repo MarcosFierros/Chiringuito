@@ -157,11 +157,11 @@ public class RecargasFragment extends Fragment {
             }
 
             uidTextView = view.findViewById(R.id.uidTextView);
-            saldoTextView = view.findViewById(R.id.recargaTVValue);
+            saldoTextView = view.findViewById(R.id.saldo_textview);
 
             uidTextView.setText(String.valueOf(usuario.getUid()));
-            String placeholder = "$ " + String.valueOf(usuario.getSaldo());
-            saldoTextView.setText(placeholder);
+
+            setTextViews(usuario.getSaldo(), 0, usuario.getSaldo());
 
             if(alertDialog != null)
                 alertDialog.dismiss();

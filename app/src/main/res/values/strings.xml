@@ -62,5 +62,6 @@
     <string name="saldo">Saldo actual:</string>
     <string name="agregar_saldo">Agregar saldo</string>
     <string name="nuevo_saldo_nocaps">Nuevo saldo:</string>
+    <string name="exito">¡La venta se ha completado con éxito!</string>
 
 </resources>

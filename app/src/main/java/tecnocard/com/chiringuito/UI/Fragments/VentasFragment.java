@@ -94,8 +94,6 @@ public class VentasFragment extends Fragment {
 
         layoutManager = new GridLayoutManager(view.getContext(), 4);
         recyclerView.setHasFixedSize(true);
-        recyclerView.addItemDecoration( new DividerItemDecoration(view.getContext(), DividerItemDecoration.HORIZONTAL));
-        recyclerView.addItemDecoration( new DividerItemDecoration(view.getContext(), DividerItemDecoration.VERTICAL));
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(imageAdapter);
 
