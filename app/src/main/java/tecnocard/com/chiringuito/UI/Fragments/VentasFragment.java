@@ -153,6 +153,7 @@ public class VentasFragment extends Fragment {
                 builder1.setPositiveButton("Ok", (dialog, which) -> showAlert(saldoValueTextView, saldoRValueTextView));
                 builder1.setView(alertView1);
                 AlertDialog alertDialog1 = builder1.create();
+                alertDialog1.setCanceledOnTouchOutside(false);
                 alertDialog1.show();
             });
             builder.setNegativeButton("Cancelar", null);
@@ -277,6 +278,8 @@ public class VentasFragment extends Fragment {
                 e.printStackTrace();
             }
         }
+
+
     }
 
     public boolean isReading() {
